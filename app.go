@@ -3,8 +3,24 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"time"
 	"github.com/emirozer/go-helpers"
 )
+
+type Visitor struct {
+	RemoteAddr   string
+	ForwardedFor string
+	Time         int64
+	UserAgent    string
+}
+
+type Visit struct {
+	Visitor           Visitor
+	RequestedResource string
+	Method            string
+	Body              string
+	Header            string
+}
 
 func main() {
 	fmt.Println("We're up and running")
@@ -18,5 +34,23 @@ func main() {
 
 func getVideo(w http.ResponseWriter, r *http.Request) {
 	hostname := r.URL.Query().Get("id")
+	logVisit(r)
 	fmt.Fprintf(w, hostname)
+}
+
+func logVisit(r *http.Request) {
+	visitor := Visit{
+		Visitor{
+			RemoteAddr:r.RemoteAddr,
+			ForwardedFor:r.Header.Get("X-FORWARDED-FOR"),
+			Time:time.Now().Unix(),
+			UserAgent:r.UserAgent(),
+		},
+		RequestedResource: r.URL.Path,
+		Method: r.Method,
+		Body: r.Body,
+		Header: r.Header,
+	}
+	fmt.Println(visitor)
+	// TODO: Log
 }
