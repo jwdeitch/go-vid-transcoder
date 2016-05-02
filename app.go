@@ -18,8 +18,6 @@ type Visit struct {
 	Visitor           Visitor
 	RequestedResource string
 	Method            string
-	Body              string
-	Header            string
 }
 
 func main() {
@@ -40,7 +38,7 @@ func getVideo(w http.ResponseWriter, r *http.Request) {
 
 func logVisit(r *http.Request) {
 	visitor := Visit{
-		Visitor{
+		Visitor: Visitor{
 			RemoteAddr:r.RemoteAddr,
 			ForwardedFor:r.Header.Get("X-FORWARDED-FOR"),
 			Time:time.Now().Unix(),
@@ -48,8 +46,6 @@ func logVisit(r *http.Request) {
 		},
 		RequestedResource: r.URL.Path,
 		Method: r.Method,
-		Body: r.Body,
-		Header: r.Header,
 	}
 	fmt.Println(visitor)
 	// TODO: Log
