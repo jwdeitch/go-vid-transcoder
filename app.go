@@ -7,6 +7,8 @@ import (
 	"os"
 	"io"
 	"github.com/emirozer/go-helpers"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/dynamodb"
 )
 
 type Visitor struct {
@@ -27,7 +29,7 @@ func main() {
 
 	http.HandleFunc("/",index)
 	http.HandleFunc("/video", getVideo) // GET video
-	http.HandleFunc("/video/upload", uploadVideo) // GET video
+	http.HandleFunc("/video/upload", uploadVideo) // POST upload video
 
 	err := http.ListenAndServe(":9090", nil)
 	helpers.Check(err)
@@ -35,7 +37,14 @@ func main() {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "index")
+	logVisit(r)
+	config := &aws.Config{
+		Region: aws.String("us-west-2"),
+	}
+	svc := dynamodb.New(config)
+	tablesOutput := dynamodb.ListTablesInput{}
+	fmt.Fprintf(w, svc.ListTables(tablesOutput))
+	//fmt.Fprintf(w, "index")
 }
 
 //Thanks! http://sanatgersappa.blogspot.com/2013/03/handling-multiple-file-uploads-in-go.html

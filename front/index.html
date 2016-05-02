@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Split.js</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css">
+    <link rel="stylesheet" href="dist/semantic.min.css">
+    <link rel="stylesheet" href="css/css.css">
+    <script src="js/jwplayer.js"></script>
+    <script>jwplayer.key = "Wy2ihs/tTPh+/ZLN3zQ0ZISUFkEmVOklyhpL7g=="</script>
+</head>
+<body>
+<div class="topBar">
+    <div class="ui small fluid icon input">
+        <input type="text" placeholder="Search...">
+        <i class="search icon"></i>
+        <button class="ui small labeled icon button">
+            <i class="setting icon"></i>
+            Settings
+        </button>
+        <button class="ui small blue labeled icon button">
+            <i class="upload icon"></i>
+            Upload
+        </button>
+    </div>
+</div>
+
+<div class="splitContainer">
+    <div id="videoGrid" class="split content split-horizontal">
+        <img src="img/Unknown.png">
+        <img src="img/Unknown.png">
+        <img src="img/Unknown.png">
+        <img src="img/Unknown.png">
+        <img src="img/Unknown.png">
+        <img src="img/Unknown.png">
+        <img src="img/Unknown.png">
+        <img src="img/Unknown.png">
+        <img src="img/Unknown.png">
+        <img src="img/Unknown.png">
+        <img src="img/Unknown.png">
+        <img src="img/Unknown.png">
+    </div>
+    <div id="videoContent" class="split content split-horizontal">
+        <div id="myElement"></div>
+        <script type="text/JavaScript">
+            var playerInstance = jwplayer("myElement");
+            playerInstance.setup({
+                file: "1453152375.webm",
+                mediaid: "MEDIAID",
+                width: "100%",
+                aspectratio: "16:9"
+            });
+        </script>
+    </div>
+</div>
+</body>
+<script src="js/jquery-2.2.3.min.js"></script>
+<script src="js/split.js"></script>
+<script src="js/js.js"></script>
+</html>
