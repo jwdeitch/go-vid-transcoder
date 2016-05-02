@@ -25,12 +25,17 @@ type Visit struct {
 func main() {
 	fmt.Println("We're up and running")
 
+	http.HandleFunc("/",index)
 	http.HandleFunc("/video", getVideo) // GET video
 	http.HandleFunc("/video/upload", uploadVideo) // GET video
 
 	err := http.ListenAndServe(":9090", nil)
 	helpers.Check(err)
 
+}
+
+func index(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "index")
 }
 
 //Thanks! http://sanatgersappa.blogspot.com/2013/03/handling-multiple-file-uploads-in-go.html
