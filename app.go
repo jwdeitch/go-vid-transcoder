@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 	"os"
+	"encoding/json"
 	"io"
 	"github.com/emirozer/go-helpers"
 	"github.com/aws/aws-sdk-go/aws"
@@ -26,16 +27,16 @@ type Visit struct {
 	Method            string
 }
 
-type Object struct {
-	Name string
-	Size int64
-	LastModified string
+type S3Object struct {
+	Name         string
+	Size         int64
+	LastModified int64
 }
 
 func main() {
 	fmt.Println("We're up and running")
 
-	http.HandleFunc("/",index)
+	http.HandleFunc("/", index)
 	http.HandleFunc("/video", getVideo) // GET video
 	http.HandleFunc("/video/upload", uploadVideo) // POST upload video
 
@@ -59,10 +60,17 @@ func index(w http.ResponseWriter, r *http.Request) {
 	objects, err := svc.ListObjects(&lsObjs)
 	helpers.Check(err)
 
+	var objectListItem []S3Object
 
+	for _, s3Item := range objects.Contents {
+		lastModified := *s3Item.LastModified
+		objectListItem = append(objectListItem, S3Object{
+			*s3Item.Key,*s3Item.Size,lastModified.Unix()})
+	}
 
-	fmt.Fprintf(w, objects.String())
-	fmt.Fprintf(w, "index")
+	response, _ := json.Marshal(objectListItem)
+
+	fmt.Fprintf(w, string(response))
 }
 
 //Thanks! http://sanatgersappa.blogspot.com/2013/03/handling-multiple-file-uploads-in-go.html
