@@ -26,6 +26,12 @@ type Visit struct {
 	Method            string
 }
 
+type Object struct {
+	Name string
+	Size int64
+	LastModified string
+}
+
 func main() {
 	fmt.Println("We're up and running")
 
@@ -47,10 +53,13 @@ func index(w http.ResponseWriter, r *http.Request) {
 		Credentials: creds})
 
 	lsObjs := s3.ListObjectsInput{
-		Bucket: aws.String("transcoderoutput489349")}
+		Bucket: aws.String("transcoderoutput489349"),
+		Prefix: aws.String("videos")}
 
 	objects, err := svc.ListObjects(&lsObjs)
 	helpers.Check(err)
+
+
 
 	fmt.Fprintf(w, objects.String())
 	fmt.Fprintf(w, "index")
