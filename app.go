@@ -8,7 +8,9 @@ import (
 	"io"
 	"github.com/emirozer/go-helpers"
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 )
 
 type Visitor struct {
@@ -38,13 +40,20 @@ func main() {
 
 func index(w http.ResponseWriter, r *http.Request) {
 	logVisit(r)
-	config := &aws.Config{
+	creds := credentials.NewEnvCredentials()
+
+	svc := s3.New(session.New(), &aws.Config{
 		Region: aws.String("us-west-2"),
-	}
-	svc := dynamodb.New(config)
-	tablesOutput := dynamodb.ListTablesInput{}
-	fmt.Fprintf(w, svc.ListTables(tablesOutput))
-	//fmt.Fprintf(w, "index")
+		Credentials: creds})
+
+	lsObjs := s3.ListObjectsInput{
+		Bucket: aws.String("transcoderoutput489349")}
+
+	objects, err := svc.ListObjects(&lsObjs)
+	helpers.Check(err)
+
+	fmt.Fprintf(w, objects.String())
+	fmt.Fprintf(w, "index")
 }
 
 //Thanks! http://sanatgersappa.blogspot.com/2013/03/handling-multiple-file-uploads-in-go.html
