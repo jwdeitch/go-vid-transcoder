@@ -63,6 +63,12 @@ func index(w http.ResponseWriter, r *http.Request) {
 	var objectListItem []S3Object
 
 	for _, s3Item := range objects.Contents {
+
+		// A key with a '/' as the last char is a directory
+		if helpers.LastNCharacters(*s3Item.Key,1) == "/" {
+			continue
+		}
+
 		lastModified := *s3Item.LastModified
 		objectListItem = append(objectListItem, S3Object{
 			*s3Item.Key,*s3Item.Size,lastModified.Unix()})
