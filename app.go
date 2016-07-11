@@ -7,7 +7,8 @@ import (
 	"os"
 	"encoding/json"
 	"io"
-	"github.com/emirozer/go-helpers"
+	"sort"
+	"github.com/inturn/go-helpers"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -33,8 +34,10 @@ type S3Object struct {
 	LastModified int64
 }
 
+type objectListItem []S3Object
+
 func main() {
-	fmt.Println("We're up and running")
+	fmt.Println("We're up and running on port 9090")
 
 	http.HandleFunc("/", index)
 	http.HandleFunc("/video", getVideo) // GET video
@@ -43,6 +46,16 @@ func main() {
 	err := http.ListenAndServe(":9090", nil)
 	helpers.Check(err)
 
+}
+
+func (s objectListItem) Len() int {
+	return len(s)
+}
+func (s objectListItem) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+func (s objectListItem) Less(i, j int) bool {
+	return s[i].LastModified < s[j].LastModified
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
@@ -60,7 +73,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 	objects, err := svc.ListObjects(&lsObjs)
 	helpers.Check(err)
 
-	var objectListItem []S3Object
+	var S3Objlist objectListItem
 
 	for _, s3Item := range objects.Contents {
 
@@ -70,11 +83,13 @@ func index(w http.ResponseWriter, r *http.Request) {
 		}
 
 		lastModified := *s3Item.LastModified
-		objectListItem = append(objectListItem, S3Object{
+		S3Objlist = append(S3Objlist, S3Object{
 			*s3Item.Key,*s3Item.Size,lastModified.Unix()})
 	}
 
-	response, _ := json.Marshal(objectListItem)
+	sort.Sort(S3Objlist)
+
+	response, _ := json.Marshal(S3Objlist)
 
 	fmt.Fprintf(w, string(response))
 }
@@ -94,9 +109,8 @@ func uploadVideo(w http.ResponseWriter, r *http.Request) {
 
 		//get a ref to the parsed multipart form
 		m := r.MultipartForm
+		files := m.File["files"]
 
-		//get the *fileheaders
-		files := m.File["myfiles"]
 		for i, _ := range files {
 			//for each fileheader, get a handle to the actual file
 			file, err := files[i].Open()
