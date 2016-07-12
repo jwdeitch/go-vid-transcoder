@@ -7,13 +7,18 @@ import (
 	"os"
 	"encoding/json"
 	"io"
+	"regexp"
 	"sort"
 	"github.com/inturn/go-helpers"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/aws/credentials"
+	"strings"
 )
+
+const bucket string = "transcoderoutput489349"
+const region string = "us-west-2"
 
 type Visitor struct {
 	RemoteAddr   string
@@ -32,6 +37,7 @@ type S3Object struct {
 	Name         string
 	Size         int64
 	LastModified int64
+	thumbCount   int
 }
 
 type objectListItem []S3Object
@@ -63,12 +69,12 @@ func index(w http.ResponseWriter, r *http.Request) {
 	creds := credentials.NewEnvCredentials()
 
 	svc := s3.New(session.New(), &aws.Config{
-		Region: aws.String("us-west-2"),
+		Region: aws.String(region),
 		Credentials: creds})
 
 	lsObjs := s3.ListObjectsInput{
-		Bucket: aws.String("transcoderoutput489349"),
-		Prefix: aws.String("videos")}
+		Bucket: aws.String(bucket),
+		Prefix: aws.String("videos/output")}
 
 	objects, err := svc.ListObjects(&lsObjs)
 	helpers.Check(err)
@@ -77,14 +83,27 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 	for _, s3Item := range objects.Contents {
 
+		thumbnailCount := 0;
+
 		// A key with a '/' as the last char is a directory
-		if helpers.LastNCharacters(*s3Item.Key,1) == "/" {
+		if helpers.LastNCharacters(*s3Item.Key, 1) == "/" {
 			continue
 		}
 
-		lastModified := *s3Item.LastModified
-		S3Objlist = append(S3Objlist, S3Object{
-			*s3Item.Key,*s3Item.Size,lastModified.Unix()})
+		// Will will count the thumbnails here
+		if "videos/output/" == helpers.FirstNCharacters(*s3Item.Key, 14) {
+			r, _ := regexp.Compile("([^\\/]*)-");
+			// some nasty regex here
+			match := strings.TrimSuffix(r.FindString(*s3Item.Key), "-")
+			// since we can't itemize by file name
+			if (match != "") {
+				thumbnailCount++
+			} else {
+				lastModified := *s3Item.LastModified
+				S3Objlist = append(S3Objlist, S3Object{
+					*s3Item.Key, *s3Item.Size, lastModified.Unix(), thumbnailCount})
+			}
+		}
 	}
 
 	sort.Sort(S3Objlist)
