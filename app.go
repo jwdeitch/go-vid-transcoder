@@ -91,18 +91,16 @@ func index(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Will will count the thumbnails here
-		if "videos/output/" == helpers.FirstNCharacters(*s3Item.Key, 14) {
-			r, _ := regexp.Compile("([^\\/]*)-");
-			// some nasty regex here
-			match := strings.TrimSuffix(r.FindString(*s3Item.Key), "-")
-			// since we can't itemize by file name
-			if (match != "") {
-				thumbnailCount++
-			} else {
-				lastModified := *s3Item.LastModified
-				S3Objlist = append(S3Objlist, S3Object{
-					*s3Item.Key, *s3Item.Size, lastModified.Unix(), thumbnailCount})
-			}
+		r, _ := regexp.Compile("([^\\/]*)-");
+		// some nasty regex here
+		match := strings.TrimSuffix(r.FindString(*s3Item.Key), "-")
+		// since we can't itemize by file name
+		if (match != "") {
+			thumbnailCount++
+		} else {
+			lastModified := *s3Item.LastModified
+			S3Objlist = append(S3Objlist, S3Object{
+				*s3Item.Key, *s3Item.Size, lastModified.Unix(), thumbnailCount})
 		}
 	}
 
