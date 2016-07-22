@@ -2,98 +2,98 @@ package main
 
 import (
 	"encoding/json"
-	"regexp"
-	"sort"
 	"github.com/inturn/go-helpers"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"strings"
-
+	//"github.com/aws/aws-sdk-go/aws"
+	//"github.com/aws/aws-sdk-go/service/s3"
+	//"github.com/aws/aws-sdk-go/aws/session"
+	//"github.com/aws/aws-sdk-go/aws/credentials"
+	//"database/sql"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/apex/go-apex"
-	"io/ioutil"
+	//"io/ioutil"
+	//"os"
+	//"fmt"
+	"log"
 	"os"
+	"io/ioutil"
+	"database/sql"
+	"time"
 )
 
-type message struct {
-	Value string `json:"value"`
-}
-
-type S3Object struct {
-	Name         string
-	Size         int64
-	LastModified int64
-	thumbCount   int
-}
-
 type Env struct {
-	AWSACCESSKEYID string `json:"AWS_ACCESS_KEY_ID"`
+	AWSACCESSKEYID     string `json:"AWS_ACCESS_KEY_ID"`
 	AWSSECRETACCESSKEY string `json:"AWS_SECRET_ACCESS_KEY"`
+	SQLUSR             string `json:"SQL_USR"`
+	SQLPASS            string `json:"SQL_PASS"`
+	SQLHOST            string `json:"SQL_HOST"`
+	SQLDB              string `json:"SQL_DB"`
 }
 
-type objectListItem []S3Object
-
-func (s objectListItem) Len() int {
-	return len(s)
-}
-func (s objectListItem) Swap(i, j int) {
-	s[i], s[j] = s[j], s[i]
-}
-func (s objectListItem) Less(i, j int) bool {
-	return s[i].LastModified < s[j].LastModified
+type S3UploadedDocument struct {
+	Records []struct {
+		EventTime         time.Time `json:"eventTime"`
+		EventName         string `json:"eventName"`
+		RequestParameters struct {
+					  SourceIPAddress string `json:"sourceIPAddress"`
+				  } `json:"requestParameters"`
+		S3                struct {
+					  Bucket struct {
+							 Name string `json:"name"`
+						 } `json:"bucket"`
+					  Object struct {
+							 Key  string `json:"key"`
+							 Size int `json:"size"`
+						 } `json:"object"`
+				  } `json:"s3"`
+	} `json:"Records"`
 }
 
 func main() {
 	apex.HandleFunc(func(event json.RawMessage, ctx *apex.Context) (interface{}, error) {
+		/* logging */
+		l := log.New(os.Stderr, "", 0) //write to stderr by default
+		eventString, _ := event.MarshalJSON();
+		l.Println(string(eventString)) // write raw event to logs
+
+		/* env var loading */
 		envFile, err := ioutil.ReadFile(".env")
+		helpers.Check(err);
 		var env Env
 		json.Unmarshal(envFile, &env)
 		os.Setenv("AWS_ACCESS_KEY_ID", env.AWSACCESSKEYID)
 		os.Setenv("AWS_SECRET_ACCESS_KEY", env.AWSSECRETACCESSKEY)
 
-		creds := credentials.NewEnvCredentials()
-
-		svc := s3.New(session.New(), &aws.Config{
-			Region: aws.String("us-west-2"),
-			Credentials: creds})
-
-		lsObjs := s3.ListObjectsInput{
-			Bucket: aws.String("transcoderoutput489349"),
-			Prefix: aws.String("videos/output")}
-
-		objects, err := svc.ListObjects(&lsObjs)
+		/* sql setup */
+		db, err := sql.Open("mysql", env.SQLUSR + ":" + env.SQLPASS + "@" + env.SQLHOST + "/" + env.SQLDB)
 		helpers.Check(err)
+		defer db.Close()
 
-		var S3Objlist objectListItem
+		/* Upload logic (insert to RDS, and initiate ETS job */
+		var s3Upload S3UploadedDocument
+		json.Unmarshal(event, &s3Upload)
 
-		for _, s3Item := range objects.Contents {
-
-			thumbnailCount := 0;
-
-			// A key with a '/' as the last char is a directory
-			if helpers.LastNCharacters(*s3Item.Key, 1) == "/" {
-				continue
-			}
-
-			// Will will count the thumbnails here
-			r, _ := regexp.Compile("([^\\/]*)-");
-			// some nasty regex here
-			match := strings.TrimSuffix(r.FindString(*s3Item.Key), "-")
-			// since we can't itemize by file name
-			if (match != "") {
-				thumbnailCount++
-			} else {
-				lastModified := *s3Item.LastModified
-				S3Objlist = append(S3Objlist, S3Object{
-					*s3Item.Key, *s3Item.Size, lastModified.Unix(), thumbnailCount})
-			}
+		insStmt, _ := db.Prepare("INSERT INTO video_service VALUES (?, ?, ?, ?, ?, ?, ?)")
+		defer insStmt.Close();
+		for _, s3record := range s3Upload.Records { // we can upload many vids in 1 request
+			display_key := helpers.RandomString(10)
+			insStmt.Exec(display_key, // p_key
+				s3record.S3.Object.Key, // video title (filename)
+				s3record.EventTime, // time of upload
+				s3record.RequestParameters.SourceIPAddress, // uploaders IP
+				nil, // length of video
+				nil, // number of thumbnails generated
+				true, // in processing?
+				s3record.S3.Object.Size) // size of uploaded file
 		}
 
-		sort.Sort(S3Objlist)
+		l.Println("completed upload")
+		return event, nil
 
-		response, _ := json.Marshal(S3Objlist)
+		//creds := credentials.NewEnvCredentials()
+		//
+		//svc := s3.New(session.New(), &aws.Config{
+		//	Region: aws.String("us-west-2"),
+		//	Credentials: creds})
 
-		return string(response), nil
 	})
 }
