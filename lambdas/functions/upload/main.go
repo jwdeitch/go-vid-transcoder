@@ -64,28 +64,37 @@ func main() {
 		os.Setenv("AWS_SECRET_ACCESS_KEY", env.AWSSECRETACCESSKEY)
 
 		/* sql setup */
-		db, err := sql.Open("mysql", env.SQLUSR + ":" + env.SQLPASS + "@" + env.SQLHOST + "/" + env.SQLDB)
-		helpers.Check(err)
+		db, err := sql.Open("mysql", env.SQLUSR + ":" + env.SQLPASS + "@tcp(" + env.SQLHOST + ":3306)/" + env.SQLDB)
+		if err != nil {
+			l.Println("ERROR 0")
+		}
+
+		l.Println("mysql", env.SQLUSR + ":" + env.SQLPASS + "@tcp(" + env.SQLHOST + ":3306)/" + env.SQLDB)
+
 		defer db.Close()
 
 		/* Upload logic (insert to RDS, and initiate ETS job */
 		var s3Upload S3UploadedDocument
-		json.Unmarshal(event, &s3Upload)
+		json.Unmarshal(eventString, &s3Upload)
 
-		insStmt, _ := db.Prepare("INSERT INTO video_service VALUES (?, ?, ?, ?, ?, ?, ?)")
-		defer insStmt.Close();
-		for _, s3record := range s3Upload.Records { // we can upload many vids in 1 request
-			display_key := helpers.RandomString(10)
-			insStmt.Exec(display_key, // p_key
-				s3record.S3.Object.Key, // video title (filename)
-				s3record.EventTime, // time of upload
-				s3record.RequestParameters.SourceIPAddress, // uploaders IP
-				nil, // length of video
-				nil, // number of thumbnails generated
-				true, // in processing?
-				s3record.S3.Object.Size) // size of uploaded file
+		insStmt, err := db.Prepare("INSERT INTO videos VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
+		if err != nil {
+			l.Println(err.Error())
 		}
-
+		defer insStmt.Close();
+		//for _, s3record := range s3Upload.Records { // we can upload many vids in 1 request
+		//	display_key := helpers.RandomString(10)
+		//	_, err := insStmt.Exec(display_key, // p_key
+		//		s3record.S3.Object.Key, // video title (filename)
+		//		s3record.EventTime, // time of upload
+		//		s3record.RequestParameters.SourceIPAddress, // uploaders IP
+		//		0, // length of video
+		//		0, // number of thumbnails generated
+		//		true, // in processing?
+		//		s3record.S3.Object.Size) // size of uploaded file
+		//	l.Println(err);
+		//}
+		//
 		l.Println("completed upload")
 		return event, nil
 
