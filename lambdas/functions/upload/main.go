@@ -68,9 +68,6 @@ func main() {
 		if err != nil {
 			l.Println("ERROR 0")
 		}
-
-		l.Println("mysql", env.SQLUSR + ":" + env.SQLPASS + "@tcp(" + env.SQLHOST + ":3306)/" + env.SQLDB)
-
 		defer db.Close()
 
 		/* Upload logic (insert to RDS, and initiate ETS job */
@@ -81,20 +78,27 @@ func main() {
 		if err != nil {
 			l.Println(err.Error())
 		}
+
 		defer insStmt.Close();
-		//for _, s3record := range s3Upload.Records { // we can upload many vids in 1 request
-		//	display_key := helpers.RandomString(10)
-		//	_, err := insStmt.Exec(display_key, // p_key
-		//		s3record.S3.Object.Key, // video title (filename)
-		//		s3record.EventTime, // time of upload
-		//		s3record.RequestParameters.SourceIPAddress, // uploaders IP
-		//		0, // length of video
-		//		0, // number of thumbnails generated
-		//		true, // in processing?
-		//		s3record.S3.Object.Size) // size of uploaded file
-		//	l.Println(err);
-		//}
-		//
+		for _, s3record := range s3Upload.Records {
+			l.Println("4")
+			// we can upload many vids in 1 request
+			display_key := helpers.RandomString(10)
+			insert, err := insStmt.Exec(display_key, // p_key
+				s3record.S3.Object.Key, // video title (filename)
+				s3record.EventTime, // time of upload
+				s3record.RequestParameters.SourceIPAddress, // uploaders IP
+				0, // length of video
+				0, // number of thumbnails generated
+				true, // in processing?
+				s3record.S3.Object.Size) // size of uploaded file
+			if err != nil {
+				l.Println(err);
+			}
+			l.Println("rows affected:")
+			l.Println(insert.RowsAffected())
+		}
+
 		l.Println("completed upload")
 		return event, nil
 
