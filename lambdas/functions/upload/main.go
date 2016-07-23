@@ -5,6 +5,7 @@ import (
 	"github.com/inturn/go-helpers"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go/service/elastictranscoder"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	_ "github.com/go-sql-driver/mysql"
@@ -72,7 +73,11 @@ func main() {
 		/* S3 setup */
 		os.Unsetenv("AWS_SESSION_TOKEN")
 		creds := credentials.NewEnvCredentials()
-		svc := s3.New(session.New(), &aws.Config{
+		s3Service := s3.New(session.New(), &aws.Config{
+			Region: aws.String("us-east-1"),
+			Credentials: creds})
+
+		ETCService := elastictranscoder.New(session.New(), &aws.Config{
 			Region: aws.String("us-east-1"),
 			Credentials: creds})
 
@@ -103,10 +108,10 @@ func main() {
 				l.Println(err);
 			}
 
-			fileNameSlice := currentTimeAsString + "-" + strings.Split(s3record.S3.Object.Key,"/")[1]
+			fileNameSlice := currentTimeAsString + "#" + display_key + "#" + strings.Split(s3record.S3.Object.Key, "/")[1]
 			copySource := s3record.S3.Bucket.Name + "/" + s3record.S3.Object.Key
 
-			copoutput, err := svc.CopyObject(&s3.CopyObjectInput{
+			copoutput, err := s3Service.CopyObject(&s3.CopyObjectInput{
 				Bucket: aws.String(s3record.S3.Bucket.Name),
 				Key: aws.String(fileNameSlice),
 				CopySource: aws.String(copySource)})
@@ -116,7 +121,7 @@ func main() {
 				l.Println(copoutput.String())
 			}
 
-			deloutput, err := svc.DeleteObject(&s3.DeleteObjectInput{
+			deloutput, err := s3Service.DeleteObject(&s3.DeleteObjectInput{
 				Bucket: aws.String(s3record.S3.Bucket.Name),
 				Key: aws.String(s3record.S3.Object.Key)})
 
@@ -125,6 +130,16 @@ func main() {
 			} else {
 				l.Println(deloutput.String())
 			}
+
+			transcodedOutputKey := "output/" + fileNameSlice
+			ETCService.CreateJob(&elastictranscoder.CreateJobInput{
+				Input: &elastictranscoder.JobInput{
+					Key: aws.String(fileNameSlice)},
+				PipelineId: aws.String("1469293642428-kiypmq"),
+				Output: &elastictranscoder.CreateJobOutput{
+					PresetId:aws.String("1469295414594-fgaog2"),
+					Key:aws.String(transcodedOutputKey)}})
+
 		}
 
 		l.Println("completed upload")
