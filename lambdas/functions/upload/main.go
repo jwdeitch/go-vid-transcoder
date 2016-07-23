@@ -97,7 +97,7 @@ func main() {
 			currentTimeAsString := strconv.FormatInt(time.Now().Unix(), 10)
 			display_key := helpers.RandomString(10)
 			_, err := insStmt.Exec(display_key, // p_key
-				s3record.S3.Object.Key, // video title (filename)
+				strings.Split(s3record.S3.Object.Key, "/")[1], // video title (filename)
 				s3record.EventTime, // time of upload
 				s3record.RequestParameters.SourceIPAddress, // uploaders IP
 				0, // length of video
@@ -134,7 +134,7 @@ func main() {
 				l.Println(deloutput.String())
 			}
 
-			transcodedOutputKey := "output/" + strings.Split(fileNameSlice,".")[0] + ".webm"
+			transcodedOutputKey := "output/" + strings.Split(fileNameSlice, ".")[0] + ".webm"
 			thumnbPattern := "output/" + uniqueKey + "_thumb{count}"
 			etcResponse, err := ETCService.CreateJob(&elastictranscoder.CreateJobInput{
 				Input: &elastictranscoder.JobInput{
