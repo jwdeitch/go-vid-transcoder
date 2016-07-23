@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"database/sql"
 	"strings"
+	"math"
 )
 
 type Env struct {
@@ -72,7 +73,21 @@ func main() {
 		message = strings.Replace(message, "\\", "", -1)
 		json.Unmarshal([]byte(message), &etsMessage)
 
+		p_key := strings.Split(etsMessage.Input.Key, "#")[1]
 
+		uptStmt, err := db.Prepare("UPDATE videos SET processing = false, length = ?, thumb_count = ? WHERE display_key = ?")
+		if err != nil {
+			l.Println(err.Error())
+		}
+		defer uptStmt.Close();
+
+		_, error := uptStmt.Exec(etsMessage.Outputs[0].Duration,
+			math.Floor(float64((etsMessage.Outputs[0].Duration / 10) + 1)),
+			p_key)
+
+		if error != nil {
+			l.Println(error.Error())
+		}
 
 		l.Println("Recieved Transcode Job")
 		return event, nil
