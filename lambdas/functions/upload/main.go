@@ -3,21 +3,19 @@ package main
 import (
 	"encoding/json"
 	"github.com/inturn/go-helpers"
-	//"github.com/aws/aws-sdk-go/aws"
-	//"github.com/aws/aws-sdk-go/service/s3"
-	//"github.com/aws/aws-sdk-go/aws/session"
-	//"github.com/aws/aws-sdk-go/aws/credentials"
-	//"database/sql"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/apex/go-apex"
-	//"io/ioutil"
-	//"os"
-	//"fmt"
 	"log"
 	"os"
 	"io/ioutil"
 	"database/sql"
 	"time"
+	"strconv"
+	"strings"
 )
 
 type Env struct {
@@ -70,6 +68,12 @@ func main() {
 		}
 		defer db.Close()
 
+		creds := credentials.NewEnvCredentials()
+
+		svc := s3.New(session.New(), &aws.Config{
+			Region: aws.String("us-east-1"),
+			Credentials: creds})
+
 		/* Upload logic (insert to RDS, and initiate ETS job */
 		var s3Upload S3UploadedDocument
 		json.Unmarshal(eventString, &s3Upload)
@@ -81,10 +85,11 @@ func main() {
 
 		defer insStmt.Close();
 		for _, s3record := range s3Upload.Records {
-			l.Println("4")
 			// we can upload many vids in 1 request
+
+			currentTimeAsString := strconv.FormatInt(time.Now().Unix(),10)
 			display_key := helpers.RandomString(10)
-			insert, err := insStmt.Exec(display_key, // p_key
+			_, err := insStmt.Exec(display_key, // p_key
 				s3record.S3.Object.Key, // video title (filename)
 				s3record.EventTime, // time of upload
 				s3record.RequestParameters.SourceIPAddress, // uploaders IP
@@ -95,18 +100,33 @@ func main() {
 			if err != nil {
 				l.Println(err);
 			}
-			l.Println("rows affected:")
-			l.Println(insert.RowsAffected())
+
+			fileNameSlice := strings.Split(s3record.S3.Object.Key, ".")
+			copySource := s3record.S3.Bucket.Name + "/" + fileNameSlice[0] + "-" + currentTimeAsString + "." + fileNameSlice[1]
+			copoutput, err := svc.CopyObject(&s3.CopyObjectInput{
+				Bucket: aws.String(s3record.S3.Bucket.Name),
+				Key: aws.String(s3record.S3.Object.Key),
+				CopySource: aws.String(copySource)})
+
+			if err != nil {
+				l.Println(err.Error())
+			} else {
+				l.Println(copoutput.String())
+			}
+
+			deloutput, err := svc.DeleteObject(&s3.DeleteObjectInput{
+				Bucket: aws.String(s3record.S3.Bucket.Name),
+				Key: aws.String(s3record.S3.Object.Key)})
+
+			if err != nil {
+				l.Println(err.Error())
+			} else {
+				l.Println(deloutput.String())
+			}
 		}
 
 		l.Println("completed upload")
 		return event, nil
-
-		//creds := credentials.NewEnvCredentials()
-		//
-		//svc := s3.New(session.New(), &aws.Config{
-		//	Region: aws.String("us-west-2"),
-		//	Credentials: creds})
 
 	})
 }
