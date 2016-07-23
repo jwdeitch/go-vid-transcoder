@@ -15,6 +15,7 @@ import (
 	"database/sql"
 	"time"
 	"strconv"
+	"strings"
 )
 
 type Env struct {
@@ -69,6 +70,7 @@ func main() {
 		defer db.Close()
 
 		/* S3 setup */
+		os.Unsetenv("AWS_SESSION_TOKEN")
 		creds := credentials.NewEnvCredentials()
 		svc := s3.New(session.New(), &aws.Config{
 			Region: aws.String("us-east-1"),
@@ -101,7 +103,7 @@ func main() {
 				l.Println(err);
 			}
 
-			fileNameSlice := currentTimeAsString + "-" + s3record.S3.Object.Key
+			fileNameSlice := currentTimeAsString + "-" + strings.Split(s3record.S3.Object.Key,"/")[1]
 			copySource := s3record.S3.Bucket.Name + "/" + s3record.S3.Object.Key
 
 			copoutput, err := svc.CopyObject(&s3.CopyObjectInput{
