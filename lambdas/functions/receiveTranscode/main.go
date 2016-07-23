@@ -33,6 +33,7 @@ type SNSOutput struct {
 
 type ETSMessage struct {
 	JobID   string `json:"jobId"`
+	State   string `json:"state"`
 	Input   struct {
 			Key string `json:"key"`
 		} `json:"input"`
@@ -74,6 +75,12 @@ func main() {
 		json.Unmarshal([]byte(message), &etsMessage)
 
 		p_key := strings.Split(etsMessage.Input.Key, "#")[1]
+
+		if etsMessage.State != "COMPLETED" {
+			db.Prepare("DELETE FROM videos WHERE display_key = ?")
+			db.Exec(p_key)
+			return event, nil
+		}
 
 		uptStmt, err := db.Prepare("UPDATE videos SET processing = false, length = ?, thumb_count = ? WHERE display_key = ?")
 		if err != nil {
