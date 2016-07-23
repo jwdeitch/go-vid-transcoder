@@ -133,8 +133,8 @@ func main() {
 				l.Println(deloutput.String())
 			}
 
-			transcodedOutputKey := "output/" + fileNameSlice
-			thumnbPattern := uniqueKey + "_thumb{count}"
+			transcodedOutputKey := "output/" + strings.Split(fileNameSlice,".")[0] + ".webm"
+			thumnbPattern := "output/" + uniqueKey + "_thumb{count}"
 			etcResponse, err := ETCService.CreateJob(&elastictranscoder.CreateJobInput{
 				Input: &elastictranscoder.JobInput{
 					Key: aws.String(fileNameSlice)},
