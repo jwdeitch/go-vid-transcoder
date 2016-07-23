@@ -93,7 +93,9 @@ func main() {
 		defer insStmt.Close();
 		for _, s3record := range s3Upload.Records {
 			// we can upload many vids in 1 request
-
+			if helpers.LastNCharacters(s3record.S3.Object.Key, 1) == "/" {
+				return event, nil
+			}
 			currentTimeAsString := strconv.FormatInt(time.Now().Unix(), 10)
 			display_key := helpers.RandomString(10)
 			_, err := insStmt.Exec(display_key, // p_key
