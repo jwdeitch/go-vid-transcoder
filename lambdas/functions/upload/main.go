@@ -134,7 +134,7 @@ func main() {
 				l.Println(deloutput.String())
 			}
 
-			transcodedOutputKey := "output/" + strings.Split(fileNameSlice, ".")[0] + ".webm"
+			transcodedOutputKey := "output/" + uniqueKey + ".webm"
 			thumnbPattern := "output/" + uniqueKey + "_thumb{count}"
 			etcResponse, err := ETCService.CreateJob(&elastictranscoder.CreateJobInput{
 				Input: &elastictranscoder.JobInput{
