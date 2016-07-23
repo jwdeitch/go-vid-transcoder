@@ -71,8 +71,7 @@ func main() {
 			Rows = append(Rows, DbRow{d_key, name, uploaded_at, length, thumb_count, processing, size})
 		}
 
-		responseJson, _ := json.Marshal(Rows)
-		return string(responseJson), nil
+		return Rows, nil
 
 	})
 }
