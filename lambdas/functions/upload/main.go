@@ -108,7 +108,9 @@ func main() {
 				l.Println(err);
 			}
 
-			fileNameSlice := currentTimeAsString + "#" + display_key + "#" + strings.Split(s3record.S3.Object.Key, "/")[1]
+			uniqueKey := currentTimeAsString + "#" + display_key + "#";
+
+			fileNameSlice := uniqueKey + strings.Split(s3record.S3.Object.Key, "/")[1]
 			copySource := s3record.S3.Bucket.Name + "/" + s3record.S3.Object.Key
 
 			copoutput, err := s3Service.CopyObject(&s3.CopyObjectInput{
@@ -132,13 +134,21 @@ func main() {
 			}
 
 			transcodedOutputKey := "output/" + fileNameSlice
-			ETCService.CreateJob(&elastictranscoder.CreateJobInput{
+			thumnbPattern := uniqueKey + "_thumb{count}"
+			etcResponse, err := ETCService.CreateJob(&elastictranscoder.CreateJobInput{
 				Input: &elastictranscoder.JobInput{
 					Key: aws.String(fileNameSlice)},
 				PipelineId: aws.String("1469293642428-kiypmq"),
 				Output: &elastictranscoder.CreateJobOutput{
 					PresetId:aws.String("1469295414594-fgaog2"),
-					Key:aws.String(transcodedOutputKey)}})
+					Key:aws.String(transcodedOutputKey),
+					ThumbnailPattern: aws.String(thumnbPattern)}})
+
+			if err != nil {
+				l.Println(err.Error())
+			} else {
+				l.Println(etcResponse.String())
+			}
 
 		}
 
