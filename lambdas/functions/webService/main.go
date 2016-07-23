@@ -29,6 +29,7 @@ type DbRow struct {
 	ThumbCount       int32
 	Processing       bool
 	PreTranscodeSize int64
+	Stamp            int64
 }
 
 func main() {
@@ -51,7 +52,7 @@ func main() {
 		}
 		defer db.Close()
 
-		rows, err := db.Query("SELECT * FROM videos LIMIT 200")
+		rows, err := db.Query("SELECT * FROM videos order by processing desc LIMIT 200")
 		if err != nil {
 			l.Println(err.Error())
 		}
@@ -65,10 +66,10 @@ func main() {
 			var thumb_count int32
 			var processing bool
 			var size int64
-			var timestamp string
+			var timestamp int64
 			err = rows.Scan(&d_key, &name, &uploaded_at, &uploaded_by, &length, &thumb_count, &processing, &size, &timestamp)
 
-			Rows = append(Rows, DbRow{d_key, name, uploaded_at, length, thumb_count, processing, size})
+			Rows = append(Rows, DbRow{d_key, name, uploaded_at, length, thumb_count, processing, size, timestamp})
 		}
 
 		return Rows, nil
