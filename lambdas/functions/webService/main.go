@@ -9,9 +9,6 @@ import (
 	"os"
 	"io/ioutil"
 	"database/sql"
-	"strings"
-	"math"
-	"fmt"
 )
 
 type Env struct {
@@ -60,24 +57,22 @@ func main() {
 		}
 		var Rows []DbRow
 		for rows.Next() {
-			var d_key int
+			var d_key string
 			var name string
 			var uploaded_at string
 			var uploaded_by string
 			var length int64
 			var thumb_count int32
 			var processing bool
-			var size string
+			var size int64
 			var timestamp string
 			err = rows.Scan(&d_key, &name, &uploaded_at, &uploaded_by, &length, &thumb_count, &processing, &size, &timestamp)
 
 			Rows = append(Rows, DbRow{d_key, name, uploaded_at, length, thumb_count, processing, size})
 		}
 
-		l.Println(string(Rows))
-
-		l.Println("Sent records to client")
-		return event, nil
+		responseJson, _ := json.Marshal(Rows)
+		return string(responseJson), nil
 
 	})
 }
