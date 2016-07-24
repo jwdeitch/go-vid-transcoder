@@ -96,6 +96,9 @@ func main() {
 			if helpers.LastNCharacters(s3record.S3.Object.Key, 1) == "/" {
 				return event, nil
 			}
+			if s3record.S3.Object.Size > 5368709120 { // if the file is over 5gb
+				return event, nil
+			}
 			currentTimeAsString := strconv.FormatInt(time.Now().Unix(), 10)
 			display_key := helpers.RandomString(10)
 			_, err := insStmt.Exec(display_key, // p_key

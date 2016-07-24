@@ -53,6 +53,15 @@ $(document).ready(function () {
             }
         },
         methods: {
+            thumbnailScroll: function(e) {
+                var target = $(e.target);
+                var d_key = target.data('d_key');
+                var stamp = target.data('stamp');
+                var tcount = target.data('tcount');
+                x = e.pageX - target.offset().left;
+                y = e.pageY - target.offset().top;
+                thumbToShow = ((x/target.width())*tcount);
+            },
             getData: function (e) {
                 $.get('https://oizgt5pjf8.execute-api.us-east-1.amazonaws.com/prod/aws-vid-transcoder_webService').done(function (data) {
                     vue.$set('videos', data);
