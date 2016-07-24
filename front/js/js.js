@@ -11,5 +11,7 @@ $(document).ready(function () {
             }
         });
     };
-    reSplit()
+    reSplit();
+
+    plyr.setup();
 });

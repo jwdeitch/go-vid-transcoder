@@ -5,8 +5,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css">
     <link rel="stylesheet" href="dist/semantic.min.css">
     <link rel="stylesheet" href="css/css.css">
-    <script src="js/jwplayer.js"></script>
-    <script>jwplayer.key = "Wy2ihs/tTPh+/ZLN3zQ0ZISUFkEmVOklyhpL7g=="</script>
+    <link rel="stylesheet" href="css/plyr.css">
 </head>
 <body>
 <div class="topBar">
@@ -40,20 +39,20 @@
         <img src="img/Unknown.png">
     </div>
     <div id="videoContent" class="split content split-horizontal">
-        <div id="myElement"></div>
-        <script type="text/JavaScript">
-            var playerInstance = jwplayer("myElement");
-            playerInstance.setup({
-                file: "1453152375.webm",
-                mediaid: "MEDIAID",
-                width: "100%",
-                aspectratio: "16:9"
-            });
-        </script>
+        <div class="videoContentContainer">
+            <video poster="https://s3.amazonaws.com/idrsainput/output/1469311645%23InCZrrLgHR%23_thumb00008.jpg"
+                   controls>
+                <source src="
+https://s3.amazonaws.com/idrsainput/output/1469311691%23kuYhaqPdO0%23.webm" type="video/webm">
+            </video>
+            <div class="left">Cdjewf.mp4</div>
+            <div class="right">Download - 44.3MB</div>
+        </div>
     </div>
 </div>
 </body>
 <script src="js/jquery-2.2.3.min.js"></script>
 <script src="js/split.js"></script>
+<script src="js/plyr.js"></script>
 <script src="js/js.js"></script>
 </html>

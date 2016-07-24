@@ -67,3 +67,15 @@ body {
 .topBar .button {
     margin-left: 20px;
 }
+
+.videoContentContainer {
+    padding: 20px;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
