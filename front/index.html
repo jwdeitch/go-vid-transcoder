@@ -25,10 +25,15 @@
 
 <div class="splitContainer">
     <div id="videoGrid" class="split content split-horizontal">
-        <img v-on:click="handelThumbClick" v-on:mousemove="thumbnailScroll" src="
+        <div class="thumbnail" v-for="video in videos">
+            <div class="ui fluid image">
+                <img v-on:click="handelThumbClick" v-on:mousemove="thumbnailScroll" src="
 https://s3.amazonaws.com/idrsainput/output/{{video.Stamp}}%23{{video.DisplayKey}}%23_thumb00001.jpg"
-             v-for="video in videos" data-size="{{video.PreTranscodeSize}}" data-name="{{video.Name}}"
-             data-d_key="{{video.DisplayKey}}" data-stamp="{{video.Stamp}}" data-tcount="{{video.ThumbCount}}">
+                     data-size="{{video.PreTranscodeSize}}" data-name="{{video.Name}}"
+                     data-d_key="{{video.DisplayKey}}" data-stamp="{{video.Stamp}}" data-tcount="{{video.ThumbCount}}">
+                <div class="ui bottom right attached label">{{secondsToString(video.Length)}}</div>
+            </div>
+        </div>
     </div>
     <div id="videoContent" class="split content split-horizontal">
         <div class="videoContentContainer">
@@ -39,7 +44,8 @@ https://s3.amazonaws.com/idrsainput/output/{{video.Stamp}}%23{{video.DisplayKey}
                     <source id="videoSrc" src="{{video}}" type="video/webm">
                 </video>
                 <div class="left">{{name}}</div>
-                <div class="right"><a href="{{downloadLink}}"><i class="cloud download icon"></i> Download - {{downloadSize}}</a></div>
+                <div class="right"><a href="{{downloadLink}}"><i class="cloud download icon"></i> Download -
+                    {{downloadSize}}</a></div>
             </div>
             <div v-else>
                 <h3>Click a video to get started</h3>
@@ -52,5 +58,6 @@ https://s3.amazonaws.com/idrsainput/output/{{video.Stamp}}%23{{video.DisplayKey}
 <script src="js/split.js"></script>
 <script src="js/plyr.js"></script>
 <script src="js/vue.js"></script>
+<script src="js/moment.js"></script>
 <script src="js/js.js"></script>
 </html>

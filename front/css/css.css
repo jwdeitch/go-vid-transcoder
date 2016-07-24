@@ -57,6 +57,31 @@ body {
     line-height: 0;
 }
 
+.thumbnail {
+    display: inline-block;
+}
+
+.ui.attached.label, .ui.bottom.attached.label {
+    width: 100%;
+    position: absolute;
+    margin: 0;
+    top: 0;
+    left: 3px;
+    padding: .75em 1em;
+    border-radius: 0;
+    opacity: 0.7;
+}
+
+.ui.label {
+    color: black;
+}
+
+.ui.bottom.right.attached.label {
+    width: auto;
+    margin-top: 0 !important;
+    border-radius: 0;
+}
+
 #videoGrid img {
     margin-bottom: 3px;
     margin-top: 3px;
@@ -79,3 +104,20 @@ body {
 .right {
     float: right;
 }
+
+
+/* MASONARY */
+/*#videoGrid {*/
+    /*line-height: 0;*/
+    /*-moz-column-width: 13em;*/
+    /*-webkit-column-width: 13em;*/
+    /*-moz-column-gap: 1em;*/
+    /*-webkit-column-gap: 1em;*/
+/*}*/
+
+/**, *:before, *:after {box-sizing:  border-box !important;}*/
+
+/*.thumbnail {*/
+    /*width:  100%;*/
+    /*display: inline-block;*/
+/*}*/
