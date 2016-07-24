@@ -60,7 +60,12 @@ $(document).ready(function () {
                 var tcount = target.data('tcount');
                 x = e.pageX - target.offset().left;
                 y = e.pageY - target.offset().top;
-                thumbToShow = ((x/target.width())*tcount);
+                thumbToShow = Math.ceil((x/target.width())*tcount);
+                if (thumbToShow == 0) {
+                    thumbToShow = 1
+                }
+                paddedThumb = "00000".substring(0, 5 - thumbToShow.toString().length) + thumbToShow;
+                target.attr('src',"https://s3.amazonaws.com/idrsainput/output/"+stamp+"%23"+d_key+"%23_thumb"+paddedThumb+".jpg")
             },
             getData: function (e) {
                 $.get('https://oizgt5pjf8.execute-api.us-east-1.amazonaws.com/prod/aws-vid-transcoder_webService').done(function (data) {
