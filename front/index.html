@@ -25,21 +25,25 @@
 
 <div class="splitContainer">
     <div id="videoGrid" class="split content split-horizontal">
-        <img v-on:click="changeVideo" src="
+        <img v-on:click="handelThumbClick" src="
 https://s3.amazonaws.com/idrsainput/output/{{video.Stamp}}%23{{video.DisplayKey}}%23_thumb00001.jpg"
              v-for="video in videos" data-size="{{video.PreTranscodeSize}}" data-name="{{video.Name}}"
              data-d_key="{{video.DisplayKey}}" data-stamp="{{video.Stamp}}">
     </div>
     <div id="videoContent" class="split content split-horizontal">
         <div class="videoContentContainer">
-            <video id="posterSrc"
-                   poster="https://s3.amazonaws.com/idrsainput/output/1469311645%23InCZrrLgHR%23_thumb00008.jpg"
-                   controls>
-                <source id="videoSrc" src="
-https://s3.amazonaws.com/idrsainput/output/1469311691%23kuYhaqPdO0%23.webm" type="video/webm">
-            </video>
-            <div class="left"><span class="videoName">Cdjewf.mp4</span></div>
-            <div class="right">Download - <span class="downloadSize">44.3MB</span></div>
+            <div v-if="initialized">
+                <video id="posterSrc"
+                       poster="{{poster}}"
+                       controls>
+                    <source id="videoSrc" src="{{video}}" type="video/webm">
+                </video>
+                <div class="left">{{name}}</div>
+                <div class="right">Download - {{downloadSize}}</div>
+            </div>
+            <div v-else>
+                <h3>Click a video to get started</h3>
+            </div>
         </div>
     </div>
 </div>

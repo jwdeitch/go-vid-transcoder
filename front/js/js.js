@@ -1,6 +1,6 @@
 // credit http://stackoverflow.com/a/18650828/4603498
-function formatBytes(bytes,decimals) {
-    if(bytes == 0) return '0 Byte';
+function formatBytes(bytes, decimals) {
+    if (bytes == 0) return '0 Byte';
     var k = 1000; // or 1024 for binary
     var dm = decimals + 1 || 3;
     var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
@@ -22,12 +22,35 @@ $(document).ready(function () {
         });
     };
     reSplit();
-    var player = plyr.setup()[0].plyr;
+    var player;
 
     vue = new Vue({
         el: 'body',
         data: {
-            videos: []
+            videos: [],
+            video: "NA",
+            poster: "NA",
+            downloadSize: "NA",
+            name: "NA",
+            stamp: "NA",
+            d_key: "NA",
+            initialized: false
+        },
+        watch: {
+            'initialized': function () {
+                player = plyr.setup()[0].plyr;
+            },
+            'd_key': function () {
+                player.source({
+                    type: 'video',
+                    sources: [{
+                        src: "https://s3.amazonaws.com/idrsainput/output/" + vue.$get('stamp') + "%23" + vue.$get('d_key') + "%23.webm",
+                        type: 'video/webm'
+                    }],
+                    poster: 'https://s3.amazonaws.com/idrsainput/output/' + vue.$get('stamp') + '%23' + vue.$get('d_key') + '%23_thumb00001.jpg'
+                });
+                player.play();
+            }
         },
         methods: {
             getData: function (e) {
@@ -35,20 +58,17 @@ $(document).ready(function () {
                     vue.$set('videos', data);
                 });
             },
+            handelThumbClick: function (e) {
+                if (!vue.$get('initialized')) {
+                    vue.$set('initialized', true);
+                }
+                vue.changeVideo(e);
+            },
             changeVideo: function (e) {
-                var d_key = $(e.target).data('d_key');
-                var stamp = $(e.target).data('stamp');
-                $('.videoName').text($(e.target).data('name'));
-                $('.downloadSize').text(formatBytes($(e.target).data('size'),1));
-                player.source({
-                    type: 'video',
-                    sources: [{
-                        src: "https://s3.amazonaws.com/idrsainput/output/" + stamp + "%23" + d_key + "%23.webm",
-                        type: 'video/webm'
-                    }],
-                    poster: 'https://s3.amazonaws.com/idrsainput/output/' + stamp + '%23' + d_key + '%23_thumb00001.jpg'
-                });
-                player.play();
+                vue.$set('d_key', $(e.target).data('d_key'));
+                vue.$set('stamp', $(e.target).data('stamp'));
+                vue.$set('name', $(e.target).data('name'));
+                vue.$set('downloadSize', formatBytes($(e.target).data('size'), 1));
             }
         }
 
