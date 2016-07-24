@@ -27,7 +27,8 @@
     <div id="videoGrid" class="split content split-horizontal">
         <img v-on:click="changeVideo" src="
 https://s3.amazonaws.com/idrsainput/output/{{video.Stamp}}%23{{video.DisplayKey}}%23_thumb00001.jpg"
-             v-for="video in videos" data-d_key="{{video.DisplayKey}}" data-stamp="{{video.Stamp}}">
+             v-for="video in videos" data-size="{{video.PreTranscodeSize}}" data-name="{{video.Name}}"
+             data-d_key="{{video.DisplayKey}}" data-stamp="{{video.Stamp}}">
     </div>
     <div id="videoContent" class="split content split-horizontal">
         <div class="videoContentContainer">
@@ -37,8 +38,8 @@ https://s3.amazonaws.com/idrsainput/output/{{video.Stamp}}%23{{video.DisplayKey}
                 <source id="videoSrc" src="
 https://s3.amazonaws.com/idrsainput/output/1469311691%23kuYhaqPdO0%23.webm" type="video/webm">
             </video>
-            <div class="left">Cdjewf.mp4</div>
-            <div class="right">Download - 44.3MB</div>
+            <div class="left"><span class="videoName">Cdjewf.mp4</span></div>
+            <div class="right">Download - <span class="downloadSize">44.3MB</span></div>
         </div>
     </div>
 </div>

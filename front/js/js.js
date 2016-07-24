@@ -1,9 +1,19 @@
+// credit http://stackoverflow.com/a/18650828/4603498
+function formatBytes(bytes,decimals) {
+    if(bytes == 0) return '0 Byte';
+    var k = 1000; // or 1024 for binary
+    var dm = decimals + 1 || 3;
+    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    var i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
+
 $(document).ready(function () {
     var reSplit = function () {
         Split(['#videoGrid', '#videoContent'], {
             direction: 'horizontal',
             minSize: 0,
-            sizes: [100, 0],
+            sizes: [50, 50],
             gutterSize: 8,
             cursor: 'row-resize',
             "onDragStart": function () {
@@ -28,6 +38,8 @@ $(document).ready(function () {
             changeVideo: function (e) {
                 var d_key = $(e.target).data('d_key');
                 var stamp = $(e.target).data('stamp');
+                $('.videoName').text($(e.target).data('name'));
+                $('.downloadSize').text(formatBytes($(e.target).data('size'),1));
                 player.source({
                     type: 'video',
                     sources: [{
