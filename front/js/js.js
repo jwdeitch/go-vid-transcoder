@@ -32,6 +32,7 @@ $(document).ready(function () {
             poster: "NA",
             downloadSize: "NA",
             name: "NA",
+            downloadLink: "NA",
             stamp: "NA",
             d_key: "NA",
             initialized: false
@@ -79,10 +80,15 @@ $(document).ready(function () {
                 vue.changeVideo(e);
             },
             changeVideo: function (e) {
-                vue.$set('d_key', $(e.target).data('d_key'));
-                vue.$set('stamp', $(e.target).data('stamp'));
-                vue.$set('name', $(e.target).data('name'));
+                var d_key = $(e.target).data('d_key');
+                var stamp = $(e.target).data('stamp');
+                var name = $(e.target).data('name');
+                vue.$set('d_key', d_key);
+                vue.$set('stamp', stamp);
+                vue.$set('name', name);
                 vue.$set('downloadSize', formatBytes($(e.target).data('size'), 1));
+
+                vue.$set('downloadLink', "https://s3.amazonaws.com/idrsainput/"+stamp+"%23"+d_key+"%23"+name);
             }
         }
 

@@ -89,7 +89,7 @@ func main() {
 		defer uptStmt.Close();
 
 		_, error := uptStmt.Exec(etsMessage.Outputs[0].Duration,
-			math.Ceil(float64((etsMessage.Outputs[0].Duration / 10) + 1)),
+			math.Ceil(float64(etsMessage.Outputs[0].Duration / 10)),
 			p_key)
 
 		if error != nil {
