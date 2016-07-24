@@ -25,24 +25,16 @@
 
 <div class="splitContainer">
     <div id="videoGrid" class="split content split-horizontal">
-        <img src="img/Unknown.png">
-        <img src="img/Unknown.png">
-        <img src="img/Unknown.png">
-        <img src="img/Unknown.png">
-        <img src="img/Unknown.png">
-        <img src="img/Unknown.png">
-        <img src="img/Unknown.png">
-        <img src="img/Unknown.png">
-        <img src="img/Unknown.png">
-        <img src="img/Unknown.png">
-        <img src="img/Unknown.png">
-        <img src="img/Unknown.png">
+        <img v-on:click="changeVideo" src="
+https://s3.amazonaws.com/idrsainput/output/{{video.Stamp}}%23{{video.DisplayKey}}%23_thumb00001.jpg"
+             v-for="video in videos" data-d_key="{{video.DisplayKey}}" data-stamp="{{video.Stamp}}">
     </div>
     <div id="videoContent" class="split content split-horizontal">
         <div class="videoContentContainer">
-            <video poster="https://s3.amazonaws.com/idrsainput/output/1469311645%23InCZrrLgHR%23_thumb00008.jpg"
+            <video id="posterSrc"
+                   poster="https://s3.amazonaws.com/idrsainput/output/1469311645%23InCZrrLgHR%23_thumb00008.jpg"
                    controls>
-                <source src="
+                <source id="videoSrc" src="
 https://s3.amazonaws.com/idrsainput/output/1469311691%23kuYhaqPdO0%23.webm" type="video/webm">
             </video>
             <div class="left">Cdjewf.mp4</div>
@@ -54,5 +46,6 @@ https://s3.amazonaws.com/idrsainput/output/1469311691%23kuYhaqPdO0%23.webm" type
 <script src="js/jquery-2.2.3.min.js"></script>
 <script src="js/split.js"></script>
 <script src="js/plyr.js"></script>
+<script src="js/vue.js"></script>
 <script src="js/js.js"></script>
 </html>
