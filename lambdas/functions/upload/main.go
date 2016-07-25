@@ -146,7 +146,7 @@ func main() {
 					Key: aws.String(fileNameSlice)},
 				PipelineId: aws.String("1469293642428-kiypmq"),
 				Output: &elastictranscoder.CreateJobOutput{
-					PresetId:aws.String("1469295414594-fgaog2"),
+					PresetId:aws.String("1469422323085-9efu7g"),
 					Key:aws.String(transcodedOutputKey),
 					ThumbnailPattern: aws.String(thumnbPattern)}})
 
