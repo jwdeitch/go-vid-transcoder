@@ -9,6 +9,87 @@ function formatBytes(bytes, decimals) {
 }
 
 $(document).ready(function () {
+
+    var app = {};
+    app.signS3RequestURL = 'https://oizgt5pjf8.execute-api.us-east-1.amazonaws.com/prod/aws-vid-transcoder_policy';
+    app.S3_BUCKET = 'http://idrsainput.s3-website-us-east-1.amazonaws.com/';
+    app._dropzoneAcceptCallback = function _dropzoneAcceptCallback(file, done) {
+        file.postData = [];
+        $.ajax({
+            url: app.signS3RequestURL,
+            data: {
+                name: file.name,
+                type: file.type,
+                size: file.size
+            },
+            type: 'POST',
+            success: function jQAjaxSuccess(response) {
+                response = JSON.parse(response);
+                file.custom_status = 'ready';
+                file.postData = response;
+                file.s3 = response.key;
+                $(file.previewTemplate).addClass('uploading');
+                done();
+            },
+            error: function(response) {
+                file.custom_status = 'rejected';
+                if (response.responseText) {
+                    response = JSON.parse(response.responseText);
+                }
+                if (response.message) {
+                    done(response.message);
+                    return;
+                }
+                done('error preparing the upload');
+            }
+        });
+    };
+
+    app._dropzoneSendingCallback = function(file, xhr, formData) {
+        $.each(file.postData, function(k, v) {
+            formData.append(k, v);
+        });
+        formData.append('Content-type', '');
+        formData.append('Content-length', '');
+        formData.append('acl', 'public-read');
+    };
+
+    app._dropzoneCompleteCallback = function(file) {
+        var inputHidden = '<input type="hidden" name="attachments[]" value="';
+        var json = {
+            url: app.S3_BUCKET + file.postData.key,
+            originalFilename: file.name
+        };
+        console.log(json, JSON.stringify(json), JSON.stringify(json).replace('"', '\"'));
+        inputHidden += window.btoa(JSON.stringify(json)) + '" />';
+        $('form#createPost').append(inputHidden);
+    };
+
+    app.setupDropzone = function setupDropzone() {
+        if ($('div#dropzone').length === 0) {
+            return;
+        }
+        Dropzone.autoDiscover = false;
+        app.dropzone = new Dropzone("div#dropzone", {
+            url: app.S3_BUCKET,
+            method: "post",
+            autoProcessQueue: true,
+            clickable: true,
+            maxfiles: 5,
+            parallelUploads: 3,
+            maxFilesize: 10, // in mb
+            maxThumbnailFilesize: 8, // 3MB
+            thumbnailWidth: 150,
+            thumbnailHeight: 150,
+            acceptedMimeTypes: "image/bmp,image/gif,image/jpg,image/jpeg,image/png",
+            accept: app._dropzoneAcceptCallback,
+            sending: app._dropzoneSendingCallback,
+            complete: app._dropzoneCompleteCallback
+        });
+    };
+
+    app.setupDropzone();
+
     var reSplit = function () {
         Split(['#videoGrid', '#videoContent'], {
             direction: 'horizontal',
