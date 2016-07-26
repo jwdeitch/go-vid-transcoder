@@ -24,43 +24,42 @@ $(document).ready(function () {
         maxThumbnailFilesize: 8, // 3MB
         thumbnailWidth: 150,
         thumbnailHeight: 150,
-        acceptedMimeTypes: "image/bmp,image/gif,image/jpg,image/jpeg,image/png"
+        acceptedMimeTypes: "video/*",
+        accept: function (file, done) {
+            console.log("efwfwefwe");
+            $.ajax({
+                async: false,
+                url: app.signS3RequestURL,
+                dataType: 'json',
+                data: JSON.stringify({file: file.name, type: file.type}),
+                type: 'POST',
+                success: function jQAjaxSuccess(response) {
+                    file.policy = response.params;
+                    console.log("policy retrieve");
+                    done();
+                },
+                error: function (response) {
+                    file.custom_status = 'rejected';
+                    if (response.responseText) {
+                        response = JSON.parse(response.responseText);
+                    }
+                    if (response.message) {
+                        done(response.message);
+                        return;
+                    }
+                    console.log("policy retrieve error");
+                    done('error preparing the upload');
+                }
+            });
+        }
     });
-    var postData = {};
-    dz.on("sending", function(file, xhr, data) {
-        $.each(postData, function(k, v){
+    dz.on("sending", function (file, xhr, data) {
+        $.each(file.policy, function (k, v) {
             data.append(k, v);
         });
     });
-    dz.on("accept",function (file, done) {
-        console.log("efwfwefwe");
-        $.ajax({
-            url: app.signS3RequestURL,
-            dataType: 'json',
-            data: JSON.stringify({file: file.name, type: file.type}),
-            type: 'POST',
-            success: function jQAjaxSuccess(response) {
-                response = JSON.parse(response);
-                postData = response.params;
-                done();
-            },
-            error: function (response) {
-                file.custom_status = 'rejected';
-                if (response.responseText) {
-                    response = JSON.parse(response.responseText);
-                }
-                if (response.message) {
-                    done(response.message);
-                    return;
-                }
-                done('error preparing the upload');
-            }
-        });
-    });
-    // End Dropzone
 
 
-    
     var reSplit = function () {
         Split(['#videoGrid', '#videoContent'], {
             direction: 'horizontal',
