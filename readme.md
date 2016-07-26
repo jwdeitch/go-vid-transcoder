@@ -22,5 +22,5 @@
 
 https://www.draw.io/
 
-https://leonid.shevtsov.me/
-(help with s3 policy creation)
+https://leonid.shevtsov.me/ and http://francolaiuppa.com/
+for help with s3 policy creation

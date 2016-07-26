@@ -23,7 +23,9 @@
         </button>
     </div>
 </div>
-
+<form action="https://s3.amazonaws.com/idrsainput/"
+      class="dropzone123"
+      id="my-awesome-dropzone"></form>
 <div class="splitContainer">
     <div id="videoGrid" class="split content split-horizontal">
         <div class="thumbnail" v-for="video in videos" v-if="video.Processing == false">
@@ -50,9 +52,6 @@ https://s3.amazonaws.com/idrsainput/output/{{video.Stamp}}%23{{video.DisplayKey}
             </div>
             <div v-else>
                 <h3>Click a video to get started</h3>
-                <form action="/file-upload"
-                      class="dropzone"
-                      id="my-awesome-dropzone"></form>
             </div>
         </div>
     </div>
