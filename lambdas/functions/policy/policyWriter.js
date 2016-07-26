@@ -27,6 +27,7 @@ function s3Params(config, filename) {
         key: filename,
         acl: 'public-read',
         success_action_status: '201',
+        'Content-Type': config.type,
         policy: policyBase64,
         'x-amz-algorithm': 'AWS4-HMAC-SHA256',
         'x-amz-credential': credential,
@@ -56,7 +57,7 @@ function s3UploadPolicy(config, filename, credential) {
             { success_action_status: "201" },
             // Optionally control content type and file size
             {'Content-Type': config.type},
-            ['content-length-range', 0, 1000000],
+            ['content-length-range', 1000, 5368709120], // 5gb
             { 'x-amz-algorithm': 'AWS4-HMAC-SHA256' },
             { 'x-amz-credential': credential },
             { 'x-amz-date': dateString() + 'T000000Z' }

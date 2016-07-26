@@ -20,13 +20,12 @@ $(document).ready(function () {
         clickable: true,
         maxfiles: 5,
         parallelUploads: 3,
-        maxFilesize: 10, // in mb
+        maxFilesize: 42950, // 5gb in mb
         maxThumbnailFilesize: 8, // 3MB
         thumbnailWidth: 150,
         thumbnailHeight: 150,
         acceptedMimeTypes: "video/*",
         accept: function (file, done) {
-            console.log("efwfwefwe");
             $.ajax({
                 async: false,
                 url: app.signS3RequestURL,
