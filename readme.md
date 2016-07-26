@@ -7,10 +7,10 @@
 ### Features
 
 - [X] Thumbnail hover preview
-- [ ] Uploading
+- [X] Uploading directly to S3
 - [ ] Masonary layout
 - [ ] Dark theme
-- [ ] Video queue (stack, queue, overwrite)
+- [ ] Video click behavior (stack, queue, overwrite)
 - [ ] Favorites
 - [ ] Statistics
 
