@@ -84,6 +84,7 @@ $(document).ready(function () {
             name: "NA",
             downloadLink: "NA",
             stamp: "NA",
+            uploaded_at: "NA",
             d_key: "NA",
             initialized: false
         },
@@ -139,6 +140,7 @@ $(document).ready(function () {
                 vue.$set('d_key', d_key);
                 vue.$set('stamp', stamp);
                 vue.$set('name', name);
+                vue.$set('uploaded_at', $(e.target).data('uploaded_at'));
                 vue.$set('downloadSize', formatBytes($(e.target).data('size'), 1));
 
                 vue.$set('downloadLink', "https://s3.amazonaws.com/idrsainput/" + stamp + "%23" + d_key + "%23" + name);

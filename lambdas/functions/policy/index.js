@@ -1,6 +1,13 @@
-exports.handle = function(e, ctx, cb) {
+exports.handle = function (e, ctx, cb) {
 
-    var s3 = require( "policyWriter" );
+    function processFilename(rawFN) {
+
+        extension = rawFN.substring(rawFN.lastIndexOf("."), rawFN.length);
+        filename = rawFN.substring(0, rawFN.lastIndexOf("."));
+        return filename.replace(/[^a-z0-9+]+/gi, " ").trim().replace(/ /g, "_") + "." + extension.replace(/\W/g, '');
+    }
+
+    var s3 = require("policyWriter");
     var env = require(".env.json");
 
     var s3Config = {
@@ -11,5 +18,5 @@ exports.handle = function(e, ctx, cb) {
         type: e.type
     };
 
-    cb(null, s3.s3Credentials(s3Config, "tmp/"+e.file));
+    cb(null, s3.s3Credentials(s3Config, "tmp/" + processFilename(e.file)));
 };
