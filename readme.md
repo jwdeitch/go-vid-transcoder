@@ -32,3 +32,4 @@ for help with s3 policy creation
 [plyr](http://plyr.io)
 [dropzone.js](http://www.dropzonejs.com)
 [moment.js](http://momentjs.com)
+[Ion.RangeSlider](https://github.com/IonDen/ion.rangeSlider)
