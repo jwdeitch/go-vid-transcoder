@@ -52,7 +52,7 @@ func main() {
 		}
 		defer db.Close()
 
-		rows, err := db.Query("SELECT * FROM videos order by processing desc LIMIT 200")
+		rows, err := db.Query("SELECT * FROM videos order by processing desc, uploaded_at desc LIMIT 200")
 		if err != nil {
 			l.Println(err.Error())
 		}

@@ -88,12 +88,12 @@ func main() {
 		}
 		defer uptStmt.Close();
 
-		_, error := uptStmt.Exec(etsMessage.Outputs[0].Duration,
-			math.Ceil(float64(etsMessage.Outputs[0].Duration / 10)),
+		_, err = uptStmt.Exec(etsMessage.Outputs[0].Duration,
+			math.Ceil(float64(etsMessage.Outputs[0].Duration) / float64(10)),
 			p_key)
 
-		if error != nil {
-			l.Println(error.Error())
+		if err != nil {
+			l.Println(err.Error())
 		}
 
 		l.Println("Recieved Transcode Job")
