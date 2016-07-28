@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Split.js</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css">
     <link rel="stylesheet" href="dist/semantic.min.css">
@@ -59,7 +60,14 @@ https://s3.amazonaws.com/idrsainput/output/{{video.Stamp}}%23{{video.DisplayKey}
                     {{downloadSize}}</a></div>
             </div>
             <div v-else>
-                <h3>Click a video to get started</h3>
+                <div class="ui message welcome">
+                    <div class="header">
+                        Welcome
+                    </div>
+                    <hr>
+                    <h4>This is an example of using Apex and AWS Lambda to produce scalable
+                    upload, transcode, and distribution of video.</h4>
+                </div>
             </div>
         </div>
     </div>
