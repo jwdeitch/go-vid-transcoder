@@ -34,7 +34,7 @@ $(document).ready(function () {
         thumbnailWidth: 150,
         thumbnailHeight: 150,
         acceptedMimeTypes: "video/*",
-        previewTemplate: $('.dz-preview').html(),
+        previewTemplate: '<div class="dz-preview dz-file-preview"> <div class="dz-details"> <div class="dz-filename"><span data-dz-name></span></div><div class="dz-size" data-dz-size></div><div class="uploadBar"><span class="uploadProgress" data-dz-uploadprogress>Uploading...</span></div></div></div>',
         accept: function (file, done) {
             $('.uploadBtn').popup({
                 inline: true,
@@ -70,6 +70,10 @@ $(document).ready(function () {
         $.each(file.policy, function (k, v) {
             data.append(k, v);
         });
+    });
+
+    dz.on('success', function(file, response) {
+        console.log(this.element, file)
     });
 
 

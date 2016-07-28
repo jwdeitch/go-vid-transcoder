@@ -30,15 +30,6 @@
         Upload
     </button>
     <div class="ui popup">
-        <div class="dz-preview dz-file-preview">
-            <div class="dz-details">
-                <div class="dz-filename"><span data-dz-name></span></div>
-                <div class="dz-size" data-dz-size></div>
-                <div class="uploadBar">
-                    <span class="uploadProgress" data-dz-uploadprogress></span>
-                </div>
-            </div>
-        </div>
         <form action="https://s3.amazonaws.com/idrsainput/" class="dz"></form>
     </div>
 </div>
@@ -69,6 +60,9 @@ https://s3.amazonaws.com/idrsainput/output/{{video.Stamp}}%23{{video.DisplayKey}
             </div>
             <div v-else>
                 <h3>Click a video to get started</h3>
+                <div class="uploadBar">
+                    <span class="uploadProgress" data-dz-uploadprogress>uploading</span>
+                </div>
             </div>
         </div>
     </div>

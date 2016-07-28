@@ -113,15 +113,20 @@ body {
 .uploadBar {
     position: relative;
     width: 100%;
+    border: 1px solid #ddd;
     height: 30px;
-    background-color: #ddd;
+    background-color: rgba(221, 221, 221, 0.4);
 }
 
 .uploadProgress {
     position: absolute;
-    /*width: 1%;*/
     height: 100%;
-    background-color: #4CAF50;
+    background-color: rgba(56, 131, 185, 0.65);
+    line-height: 27px;
+    width: 37%;
+    text-shadow: 1px 1px #000000;
+    text-align: center;
+    color: white;
 }
 
 
