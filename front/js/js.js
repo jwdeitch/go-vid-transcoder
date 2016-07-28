@@ -10,10 +10,19 @@ function formatBytes(bytes, decimals) {
 
 $(document).ready(function () {
     // Dropzone
+
+    $('.uploadBtn').click(function () {
+        $('.dz')[0].click()
+    });
+
+    $('.settingsBtn').popup({
+        inline: true
+    });
+
     var app = {};
     app.signS3RequestURL = 'https://oizgt5pjf8.execute-api.us-east-1.amazonaws.com/prod/aws-vid-transcoder_policy';
     app.S3_BUCKET = 'https://s3.amazonaws.com/idrsainput/';
-    var dz = new Dropzone(".dropzone123", {
+    var dz = new Dropzone(".dz", {
         url: app.S3_BUCKET,
         method: "post",
         autoProcessQueue: true,
@@ -25,7 +34,12 @@ $(document).ready(function () {
         thumbnailWidth: 150,
         thumbnailHeight: 150,
         acceptedMimeTypes: "video/*",
+        previewTemplate: $('.dz-preview').html(),
         accept: function (file, done) {
+            $('.uploadBtn').popup({
+                inline: true,
+                hoverable: true
+            });
             $.ajax({
                 async: false,
                 url: app.signS3RequestURL,

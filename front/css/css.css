@@ -105,6 +105,25 @@ body {
     float: right;
 }
 
+#searchBar {
+    display: inline-flex;
+    width: 50%;
+}
+
+.uploadBar {
+    position: relative;
+    width: 100%;
+    height: 30px;
+    background-color: #ddd;
+}
+
+.uploadProgress {
+    position: absolute;
+    /*width: 1%;*/
+    height: 100%;
+    background-color: #4CAF50;
+}
+
 
 /* MASONARY */
 /*#videoGrid {*/
