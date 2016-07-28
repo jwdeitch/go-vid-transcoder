@@ -8,6 +8,10 @@ body {
     box-sizing: border-box;
 }
 
+#popup {
+    width: 300px;
+}
+
 .split {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
