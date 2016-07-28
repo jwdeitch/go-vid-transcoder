@@ -8,7 +8,6 @@
 
 - [X] Thumbnail hover preview
 - [X] Uploading directly to S3
-- [ ] Masonary layout
 - [ ] Dark theme
 - [ ] Video click behavior (stack, queue, overwrite)
 - [ ] Favorites
@@ -26,4 +25,10 @@ https://leonid.shevtsov.me/ and http://francolaiuppa.com/
 for help with s3 policy creation
 
 
-UI: [semantic-ui](http://semantic-ui.com/)
+[semantic-ui](http://semantic-ui.com/)
+[jQuery](http://jquery.com)
+[Vue.js](http://vuejs.org)
+[split.js](http://nathancahill.github.io/Split.js/)
+[plyr](http://plyr.io)
+[dropzone.js](http://www.dropzonejs.com)
+[moment.js](http://momentjs.com)

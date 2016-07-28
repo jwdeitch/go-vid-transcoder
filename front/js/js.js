@@ -34,11 +34,12 @@ $(document).ready(function () {
         thumbnailWidth: 150,
         thumbnailHeight: 150,
         acceptedMimeTypes: "video/*",
-        previewTemplate: '<div class="dz-preview dz-file-preview"> <div class="dz-details"> <div class="dz-filename"><span data-dz-name></span></div><div class="dz-size" data-dz-size></div><div class="uploadBar"><span class="uploadProgress" data-dz-uploadprogress>Uploading...</span></div></div></div>',
+        previewTemplate: '<div class="dz-preview dz-file-preview"><div class="dz-details"><div class="dz-filename"><b><span data-dz-name></span></b></div><div class="dz-size" data-dz-size></div><div class="uploadBar"><span class="uploadProgress" data-dz-uploadprogress>Uploading...</span></div></div></div>',
         accept: function (file, done) {
             $('.uploadBtn').popup({
-                inline: true,
-                hoverable: true
+                hoverable: true,
+                duration: 20,
+                position: 'bottom center'
             });
             $.ajax({
                 async: false,
@@ -72,7 +73,7 @@ $(document).ready(function () {
         });
     });
 
-    dz.on('success', function(file, response) {
+    dz.on('success', function (file, response) {
         console.log(this.element, file)
     });
 
