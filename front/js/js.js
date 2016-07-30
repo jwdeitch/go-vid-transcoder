@@ -173,7 +173,7 @@ $(document).ready(function () {
                     vue.$set('videos', data);
                     data.map(function (obj) {
                         if (obj.Processing === false) {
-                            $('.popup .' + obj.FEKey + ' .uploadBar .uploadProgress').html("Done!").addClass('fileDone').removeClass('fileTranscoding');
+                            $('.popup .' + obj.DisplayKey + ' .uploadBar .uploadProgress').html("Done!").addClass('fileDone').removeClass('fileTranscoding');
                         }
                     });
                 });
