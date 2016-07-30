@@ -49,7 +49,8 @@ $(document).ready(function () {
     $('.settingsBtn').popup({
         inline: true,
         hoverable: true,
-        delay: 20
+        delay: 20,
+        position: 'bottom center'
     });
 
     var app = {};

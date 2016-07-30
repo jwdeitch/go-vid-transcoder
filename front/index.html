@@ -19,10 +19,6 @@
         <input type="text" placeholder="Search...">
         <i class="search icon"></i>
     </div>
-    <div class="ui toggle checkbox">
-        <input type="checkbox" name="public">
-        <label>Subscribe to weekly newsletter</label>
-    </div>
     <div class="right">
         <button class="ui small labeled icon button settingsBtn">
             <i class="setting icon"></i>
@@ -31,6 +27,11 @@
         <div class="ui fluid popup">
             <div id="thumbnailSizeRange"></div>
             Thumbnail Size Range
+            <hr>
+            <div class="ui toggle checkbox">
+                <input type="checkbox" name="public">
+                <label>Auto-refresh</label>
+            </div>
         </div>
         <button class="ui small blue labeled icon button uploadBtn">
             <i class="upload icon"></i>
@@ -65,6 +66,9 @@ https://s3.amazonaws.com/idrsainput/output/{{video.Stamp}}%23{{video.DisplayKey}
                 <div class="left">{{name}} / {{uploaded_at}}</div>
                 <div class="right"><a href="{{downloadLink}}"><i class="cloud download icon"></i> Download -
                     {{downloadSize}}</a></div>
+                <div class="notes">
+                    {{notes}}
+                </div>
             </div>
             <div v-else>
                 <div class="ui message welcome">
