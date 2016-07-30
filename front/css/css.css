@@ -129,12 +129,23 @@ body {
 .uploadProgress {
     position: absolute;
     height: 100%;
-    background-color: rgba(56, 131, 185, 0.65);
     line-height: 27px;
     width: 37%;
     text-shadow: 1px 1px #000000;
     text-align: center;
     color: white;
+}
+
+.fileDone {
+    background-color: rgba(56, 185, 66, 0.65); !important;
+}
+
+.fileTranscoding {
+    background-color: rgba(56, 131, 185, 0.65);
+}
+
+.fileUploading {
+    background-color: rgba(185, 56, 56, 0.65); !important;
 }
 
 /* Inset, by Dan Eden */

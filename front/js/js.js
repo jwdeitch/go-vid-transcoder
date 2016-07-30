@@ -30,17 +30,17 @@ $(document).ready(function () {
         maxfiles: 5,
         parallelUploads: 3,
         maxFilesize: 42950, // 5gb in mb
-        maxThumbnailFilesize: 8, // 3MB
+        maxThumbnailFilesize: 8,
         thumbnailWidth: 150,
         thumbnailHeight: 150,
         acceptedMimeTypes: "video/*",
-        previewTemplate: '<div class="dz-preview dz-file-preview"><div class="dz-details"><div class="dz-filename"><b><span data-dz-name></span></b></div><div class="dz-size" data-dz-size></div><div class="uploadBar"><span class="uploadProgress" data-dz-uploadprogress>Uploading...</span></div></div></div>',
+        previewTemplate: '<div class="dz-preview dz-file-preview"><div class="dz-details"><div class="dz-filename"><b><span data-dz-name></span></b></div><div class="dz-size" data-dz-size></div><div class="uploadBar"><span class="uploadProgress fileUploading" data-dz-uploadprogress>Uploading...</span></div></div></div>',
         accept: function (file, done) {
             $('.uploadBtn').popup({
                 hoverable: true,
                 duration: 20,
                 position: 'bottom center'
-            });
+            }).popup('show');
             $.ajax({
                 async: false,
                 url: app.signS3RequestURL,
@@ -74,7 +74,7 @@ $(document).ready(function () {
     });
 
     dz.on('success', function (file, response) {
-        console.log(this.element, file)
+        $(file.previewTemplate.childNodes[0].childNodes[2]).children(".uploadProgress").html("Transcoding    <div class='ui mini active inverted inline loader'></div>").addClass('fileTranscoding').removeClass('fileUploading');
     });
 
 
