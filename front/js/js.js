@@ -68,7 +68,7 @@ $(document).ready(function () {
                 type: 'POST',
                 success: function jQAjaxSuccess(response) {
                     file.policy = response.params;
-                    getFileElement(file).addClass(response.params.key.split('/')[1].split('.')[0]);
+                    getFileElement(file).addClass(response.params.key.split('#%#')[1].split('.')[0]);
                     done();
                 },
                 error: function (response) {
@@ -173,8 +173,7 @@ $(document).ready(function () {
                     vue.$set('videos', data);
                     data.map(function (obj) {
                         if (obj.Processing === false) {
-                            lookupFileName = obj.Name.split('.')[0];
-                            $('.' + lookupFileName + ' .uploadBar .uploadProgress').html("Done!").addClass('fileDone').removeClass('fileTranscoding');
+                            $('.popup .' + obj.FEKey + ' .uploadBar .uploadProgress').html("Done!").addClass('fileDone').removeClass('fileTranscoding');
                         }
                     });
                 });

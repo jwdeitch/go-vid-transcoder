@@ -85,7 +85,7 @@ func main() {
 		var s3Upload S3UploadedDocument
 		json.Unmarshal(eventString, &s3Upload)
 
-		insStmt, err := db.Prepare("INSERT INTO videos VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")
+		insStmt, err := db.Prepare("INSERT INTO videos VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 		if err != nil {
 			l.Println(err.Error())
 		}
@@ -99,6 +99,9 @@ func main() {
 			if s3record.S3.Object.Size > 5368709120 { // if the file is over 5gb
 				return event, nil
 			}
+
+			FEKey := strings.Split(strings.Split(strings.Split(s3record.S3.Object.Key, "/")[1], "%23%25%23")[1],".")[0]
+
 			currentTimeAsString := strconv.FormatInt(time.Now().Unix(), 10)
 			display_key := helpers.RandomString(10)
 			_, err := insStmt.Exec(display_key, // p_key
@@ -109,7 +112,8 @@ func main() {
 				0, // number of thumbnails generated
 				true, // in processing?
 				s3record.S3.Object.Size, // size of uploaded file
-				currentTimeAsString) // processing_timestamp
+				currentTimeAsString, // processing_timestamp
+				FEKey) // processing_timestamp
 			if err != nil {
 				l.Println(err);
 			}

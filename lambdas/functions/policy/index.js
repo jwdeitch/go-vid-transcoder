@@ -1,5 +1,17 @@
 exports.handle = function (e, ctx, cb) {
 
+    // http://stackoverflow.com/a/1349426/4603498
+    function makeid()
+    {
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        for( var i=0; i < 10; i++ )
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+        return text;
+    }
+
     // For security, we want to strip all non alpha-numeric characters
     function processFilename(rawFN) {
         if (rawFN.lastIndexOf(".") == -1) {
@@ -7,7 +19,7 @@ exports.handle = function (e, ctx, cb) {
         }
 
         extension = rawFN.substring(rawFN.lastIndexOf("."), rawFN.length).replace(/\W/g, '');
-        filename = rawFN.substring(0, rawFN.lastIndexOf(".")).replace(/[^a-z0-9+]+/gi, " ").trim().replace(/ /g, "_");
+        filename = rawFN.substring(0, rawFN.lastIndexOf(".")).replace(/[^a-z0-9+]+/gi, " ").trim().replace(/ /g, "_") + "#%#" + makeid();
 
         if (filename.length == 0) {
             filename = "I_did_not_provide_a_valid_filename"
