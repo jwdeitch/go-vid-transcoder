@@ -145,6 +145,7 @@ $(document).ready(function () {
             name: "NA",
             downloadLink: "NA",
             stamp: "NA",
+            notes: "NA",
             uploaded_at: "NA",
             d_key: "NA",
             initialized: false
@@ -205,6 +206,7 @@ $(document).ready(function () {
                 var name = $(e.target).data('name');
                 vue.$set('d_key', d_key);
                 vue.$set('stamp', stamp);
+                vue.$set('notes', $(e.target).data('notes'));
                 vue.$set('name', name);
                 vue.$set('uploaded_at', $(e.target).data('uploaded_at'));
                 vue.$set('downloadSize', formatBytes($(e.target).data('size'), 1));

@@ -85,7 +85,7 @@ func main() {
 		var s3Upload S3UploadedDocument
 		json.Unmarshal(eventString, &s3Upload)
 
-		insStmt, err := db.Prepare("INSERT INTO videos VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")
+		insStmt, err := db.Prepare("INSERT INTO videos VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 		if err != nil {
 			l.Println(err.Error())
 		}
@@ -110,7 +110,8 @@ func main() {
 				0, // number of thumbnails generated
 				true, // in processing?
 				s3record.S3.Object.Size, // size of uploaded file
-				currentTimeAsString) // processing_timestamp
+				currentTimeAsString, // processing_timestamp
+				nil) //notes
 			if err != nil {
 				l.Println(err);
 			}

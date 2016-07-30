@@ -31,6 +31,7 @@ type DbRow struct {
 	Processing       bool
 	PreTranscodeSize int64
 	Stamp            int64
+	Notes            string
 }
 
 func main() {
@@ -68,12 +69,13 @@ func main() {
 			var processing bool
 			var size int64
 			var timestamp int64
-			err = rows.Scan(&d_key, &name, &uploaded_at, &uploaded_by, &length, &thumb_count, &processing, &size, &timestamp)
+			var notes string
+			err = rows.Scan(&d_key, &name, &uploaded_at, &uploaded_by, &length, &thumb_count, &processing, &size, &timestamp, &notes)
 
 			extension := strings.Split(name,".")[1]
 			name = strings.Split(name,"%23%25%23")[0] + "." + extension
 
-			Rows = append(Rows, DbRow{d_key, name, uploaded_at, length, thumb_count, processing, size, timestamp})
+			Rows = append(Rows, DbRow{d_key, name, uploaded_at, length, thumb_count, processing, size, timestamp, notes})
 		}
 
 		return Rows, nil

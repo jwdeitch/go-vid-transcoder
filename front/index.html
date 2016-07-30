@@ -48,6 +48,7 @@
             <div class="ui fluid image">
                 <img v-on:click="handelThumbClick" v-on:mousemove="thumbnailScroll" src="
 https://s3.amazonaws.com/idrsainput/output/{{video.Stamp}}%23{{video.DisplayKey}}%23_thumb00001.jpg"
+                     data-notes="{{video.Notes}}"
                      data-size="{{video.PreTranscodeSize}}" data-name="{{video.Name}}"
                      data-d_key="{{video.DisplayKey}}" data-stamp="{{video.Stamp}}" data-tcount="{{video.ThumbCount}}"
                      data-uploaded_at="{{video.Uploaded_at}}">
@@ -63,10 +64,14 @@ https://s3.amazonaws.com/idrsainput/output/{{video.Stamp}}%23{{video.DisplayKey}
                        controls>
                     <source id="videoSrc" src="{{video}}" type="video/webm">
                 </video>
-                <div class="left">{{name}} / {{uploaded_at}}</div>
-                <div class="right"><a href="{{downloadLink}}"><i class="cloud download icon"></i> Download -
-                    {{downloadSize}}</a></div>
-                <div class="notes">
+                <div class="videoData">
+                    <div class="left"><span class="videoName">{{name}}</span> / {{uploaded_at}}</div>
+                    <div class="right"><a href="{{downloadLink}}"><i class="cloud download icon"></i> Download -
+                        {{downloadSize}}</a>
+                    </div>
+                </div>
+            <hr>
+                <div class="left notes">
                     {{notes}}
                 </div>
             </div>
