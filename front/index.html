@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="css/popup.min.css">
     <link rel="stylesheet" href="css/progress.min.css">
     <link rel="stylesheet" href="css/nouislider.css">
+    <link rel="stylesheet" href="css/checkbox.min.css">
     <link rel="stylesheet" href="css/transition.min.css">
 </head>
 <body>
@@ -18,14 +19,18 @@
         <input type="text" placeholder="Search...">
         <i class="search icon"></i>
     </div>
+    <div class="ui toggle checkbox">
+        <input type="checkbox" name="public">
+        <label>Subscribe to weekly newsletter</label>
+    </div>
     <div class="right">
         <button class="ui small labeled icon button settingsBtn">
             <i class="setting icon"></i>
             Settings
         </button>
         <div class="ui fluid popup">
-            <div class="header">User Rating</div>
-            <div class="ui star rating" data-rating="3"></div>
+            <div id="thumbnailSizeRange"></div>
+            Thumbnail Size Range
         </div>
         <button class="ui small blue labeled icon button uploadBtn">
             <i class="upload icon"></i>
@@ -85,5 +90,6 @@ https://s3.amazonaws.com/idrsainput/output/{{video.Stamp}}%23{{video.DisplayKey}
 <script src="js/transition.min.js"></script>
 <script src="js/progress.min.js"></script>
 <script src="js/nouislider.min.js"></script>
+<script src="js/checkbox.min.js"></script>
 <script src="js/js.js"></script>
 </html>

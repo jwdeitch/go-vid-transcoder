@@ -71,6 +71,11 @@ body {
     display: inline-block;
 }
 
+#thumbnailSizeRange {
+    width: 200px;
+    display: inline-block;
+}
+
 .ui.attached.label, .ui.bottom.attached.label {
     width: 100%;
     position: absolute;

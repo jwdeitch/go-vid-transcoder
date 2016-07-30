@@ -30,12 +30,26 @@ function processFilename(rawFN) {
 $(document).ready(function () {
     // Dropzone
 
+    var rangeSlider = document.getElementById('thumbnailSizeRange');
+
+    noUiSlider.create(rangeSlider, {
+        start: [200],
+        range: {
+            'min': [120],
+            'max': [420]
+        }
+    });
+
+    $('.checkbox').checkbox();
+
     $('.uploadBtn').click(function () {
         $('.dz')[0].click()
     });
 
     $('.settingsBtn').popup({
-        inline: true
+        inline: true,
+        hoverable: true,
+        delay: 20
     });
 
     var app = {};
