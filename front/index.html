@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Split.js</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css">
     <link rel="stylesheet" href="dist/semantic.min.css">
@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/plyr.css">
     <link rel="stylesheet" href="css/popup.min.css">
     <link rel="stylesheet" href="css/progress.min.css">
+    <link rel="stylesheet" href="css/nouislider.css">
     <link rel="stylesheet" href="css/transition.min.css">
 </head>
 <body>
@@ -17,20 +18,22 @@
         <input type="text" placeholder="Search...">
         <i class="search icon"></i>
     </div>
-    <button class="ui small labeled icon button settingsBtn">
-        <i class="setting icon"></i>
-        Settings
-    </button>
-    <div class="ui fluid popup">
-        <div class="header">User Rating</div>
-        <div class="ui star rating" data-rating="3"></div>
-    </div>
-    <button class="ui small blue labeled icon button uploadBtn">
-        <i class="upload icon"></i>
-        Upload
-    </button>
-    <div class="ui popup" id="popup">
-        <form action="https://s3.amazonaws.com/idrsainput/" class="dz"></form>
+    <div class="right">
+        <button class="ui small labeled icon button settingsBtn">
+            <i class="setting icon"></i>
+            Settings
+        </button>
+        <div class="ui fluid popup">
+            <div class="header">User Rating</div>
+            <div class="ui star rating" data-rating="3"></div>
+        </div>
+        <button class="ui small blue labeled icon button uploadBtn">
+            <i class="upload icon"></i>
+            Upload
+        </button>
+        <div class="ui popup" id="popup">
+            <form action="https://s3.amazonaws.com/idrsainput/" class="dz"></form>
+        </div>
     </div>
 </div>
 <div class="splitContainer">
@@ -65,7 +68,7 @@ https://s3.amazonaws.com/idrsainput/output/{{video.Stamp}}%23{{video.DisplayKey}
                     </div>
                     <hr>
                     <h4>This is an example of using Apex and AWS Lambda to produce scalable
-                    upload, transcode, and distribution of video.</h4>
+                        upload, transcode, and distribution of video.</h4>
                 </div>
             </div>
         </div>
@@ -81,5 +84,6 @@ https://s3.amazonaws.com/idrsainput/output/{{video.Stamp}}%23{{video.DisplayKey}
 <script src="js/popup.min.js"></script>
 <script src="js/transition.min.js"></script>
 <script src="js/progress.min.js"></script>
+<script src="js/nouislider.min.js"></script>
 <script src="js/js.js"></script>
 </html>
