@@ -27,6 +27,10 @@ function processFilename(rawFN) {
     return filename + "." + extension;
 }
 
+config = {
+    webserviceLambda: "https://oizgt5pjf8.execute-api.us-east-1.amazonaws.com/prod/aws-vid-transcoder_webService"
+};
+
 $(document).ready(function () {
     // Dropzone
 
@@ -144,6 +148,7 @@ $(document).ready(function () {
             videos: [],
             video: "NA",
             poster: "NA",
+            inSearch: false,
             downloadSize: "NA",
             name: "NA",
             downloadLink: "NA",
@@ -173,6 +178,32 @@ $(document).ready(function () {
             secondsToString: function (seconds) {
                 return moment.duration(seconds, 'seconds').humanize();
             },
+            search: function () {
+                that = this;
+                window.clearTimeout(window.timeOutId);
+                window.timeOutId = window.setTimeout(function () {
+                    input = $('.search');
+
+                    if (input.val().length > 0) {
+                        vue.$set('inSearch', true);
+                        $.ajax({
+                            type: "GET",
+                            url: 'https://oizgt5pjf8.execute-api.us-east-1.amazonaws.com/prod/aws-vid-transcoder_webService' + '?q=' + input.val(),
+                            beforeSend: function () {
+                                input.parent().addClass('loading');
+                            },
+                            success: function (data) {
+                                vue.$set('videos', data);
+                                input.parent().removeClass('loading');
+                            },
+                            dataType: 'json'
+                        });
+                    } else {
+                        that.$set('inSearch', false);
+                        vue.getData()
+                    }
+                }, 500);
+            },
             thumbnailScroll: function (e) {
                 var target = $(e.target);
                 var d_key = target.data('d_key');
@@ -187,14 +218,16 @@ $(document).ready(function () {
                 paddedThumb = "00000".substring(0, 5 - thumbToShow.toString().length) + thumbToShow;
                 target.attr('src', "https://s3.amazonaws.com/idrsainput/output/" + stamp + "%23" + d_key + "%23_thumb" + paddedThumb + ".jpg")
             },
-            getData: function (e) {
-                $.get('https://oizgt5pjf8.execute-api.us-east-1.amazonaws.com/prod/aws-vid-transcoder_webService').done(function (data) {
-                    vue.$set('videos', data);
+            getData: function () {
+                $.get(config.webserviceLambda).done(function (data) {
                     data.map(function (obj) {
                         if (obj.Processing === false) {
                             $('.popup .' + obj.DisplayKey + ' .uploadBar .uploadProgress').html("Done!").addClass('fileDone').removeClass('fileTranscoding');
                         }
                     });
+                    if (!vue.$get('inSearch')) {
+                        vue.$set('videos', data);
+                    }
                 });
             },
             handelThumbClick: function (e) {
