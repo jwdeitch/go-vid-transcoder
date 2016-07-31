@@ -246,8 +246,7 @@ $(document).ready(function () {
                 vue.$set('name', name);
                 vue.$set('uploaded_at', $(e.target).data('uploaded_at'));
                 vue.$set('downloadSize', formatBytes($(e.target).data('size'), 1));
-
-                vue.$set('downloadLink', "https://s3.amazonaws.com/idrsainput/" + stamp + "%23" + d_key + "%23" + name);
+                vue.$set('downloadLink', "https://s3.amazonaws.com/idrsainput/" + stamp + "%23" + d_key + "%23" + name.split('.')[0] + "%2523%2525%2523" + d_key + "." + name.split('.')[1]);
             }
         }
 
