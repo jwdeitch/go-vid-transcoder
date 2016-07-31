@@ -49,8 +49,11 @@ $(document).ready(function () {
     $('.settingsBtn').popup({
         inline: true,
         hoverable: true,
-        delay: 20,
-        position: 'bottom center'
+        position: 'bottom center',
+        delay: {
+            show: 20,
+            hide: 200
+        }
     });
 
     var app = {};

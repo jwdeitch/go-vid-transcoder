@@ -101,9 +101,13 @@ func main() {
 			}
 			display_key := strings.Split(strings.Split(strings.Split(s3record.S3.Object.Key, "/")[1], "%23%25%23")[1],".")[0]
 
+			videoName := strings.Split(strings.Split(s3record.S3.Object.Key, "/")[1], "%23%25%23")[0]
+
+			videoExtension := "." + strings.Split(s3record.S3.Object.Key, ".")[1]
+
 			currentTimeAsString := strconv.FormatInt(time.Now().Unix(), 10)
 			_, err := insStmt.Exec(display_key, // p_key
-				strings.Split(s3record.S3.Object.Key, "/")[1], // video title (filename)
+				videoName + videoExtension, // video title (filename)
 				s3record.EventTime, // time of upload
 				s3record.RequestParameters.SourceIPAddress, // uploaders IP
 				0, // length of video

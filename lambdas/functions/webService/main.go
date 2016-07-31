@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"database/sql"
 	"strings"
+	"regexp"
 )
 
 type Env struct {
@@ -34,6 +35,14 @@ type DbRow struct {
 	Notes            string
 }
 
+type query struct {
+	Params struct {
+		       Querystring struct {
+					   Q string `json:"q"`
+				   } `json:"querystring"`
+	       } `json:"params"`
+}
+
 func main() {
 	apex.HandleFunc(func(event json.RawMessage, ctx *apex.Context) (interface{}, error) {
 		/* logging */
@@ -54,7 +63,22 @@ func main() {
 		}
 		defer db.Close()
 
-		rows, err := db.Query("SELECT * FROM videos order by processing desc, uploaded_at desc LIMIT 200")
+		var rows *sql.Rows
+
+		var searchQuery query;
+
+		if (json.Unmarshal(eventString, &searchQuery) == nil) {
+			reg, err := regexp.Compile("[^A-Za-z0-9]+")
+			if err != nil {
+				log.Fatal(err)
+			}
+			keywords := "%"+reg.ReplaceAllString(searchQuery.Params.Querystring.Q, "_")+"%"
+			l.Println(keywords)
+			rows, err = db.Query("SELECT * FROM videos where name like ? order by processing desc, uploaded_at desc LIMIT 200", keywords)
+		} else {
+			rows, err = db.Query("SELECT * FROM videos order by processing desc, uploaded_at desc LIMIT 200")
+		}
+
 		if err != nil {
 			l.Println(err.Error())
 		}
@@ -72,8 +96,8 @@ func main() {
 			var notes string
 			err = rows.Scan(&d_key, &name, &uploaded_at, &uploaded_by, &length, &thumb_count, &processing, &size, &timestamp, &notes)
 
-			extension := strings.Split(name,".")[1]
-			name = strings.Split(name,"%23%25%23")[0] + "." + extension
+			extension := strings.Split(name, ".")[1]
+			name = strings.Split(name, "%23%25%23")[0] + "." + extension
 
 			Rows = append(Rows, DbRow{d_key, name, uploaded_at, length, thumb_count, processing, size, timestamp, notes})
 		}
