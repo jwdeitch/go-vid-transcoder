@@ -1,8 +1,10 @@
 ## AWS Video Transcoder
 
+<h4 align="center">Video uploading and transcoding in AWS Lambda, with Golang and [Apex](http://github.com/apex/apex)</h1>
 
-![diagram](http://s.rsa.pub/uitmg9ds1pryawa.jpg)
-
+<p align="center">
+<img src="http://s.rsa.pub/uitmg9ds1pryawa.jpg">
+</p>
 
 ### Features
 
@@ -16,6 +18,8 @@
 - [ ] Statistics
 
 ---
+### Built with
+
 
 [![IWantMyName](http://s.rsa.pub/iwmn-square-small.png)](https://iwantmyname.com/)
 
