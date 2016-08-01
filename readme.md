@@ -9,6 +9,7 @@
 - [X] Thumbnail hover preview
 - [X] Uploading directly to S3
 - [X] Real-time upload and transcode progress
+- [X] Thumbnail size slider
 - [ ] Dark theme
 - [ ] Video click behavior (stack, queue, overwrite)
 - [ ] Favorites
@@ -30,7 +31,7 @@
 - [plyr](http://plyr.io)
 - [dropzone.js](http://www.dropzonejs.com)
 - [moment.js](http://momentjs.com)
-- [Ion.RangeSlider](https://github.com/IonDen/ion.rangeSlider)
+- [nouislider](http://refreshless.com/nouislider/)
 
 
 ---

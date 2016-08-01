@@ -36,14 +36,6 @@ $(document).ready(function () {
 
     var rangeSlider = document.getElementById('thumbnailSizeRange');
 
-    noUiSlider.create(rangeSlider, {
-        start: [200],
-        range: {
-            'min': [120],
-            'max': [420]
-        }
-    });
-
     $('.checkbox').checkbox();
 
     $('.uploadBtn').click(function () {
@@ -147,8 +139,9 @@ $(document).ready(function () {
         data: {
             videos: [],
             video: "NA",
-            poster: "NA",
             inSearch: false,
+            thumbnailSize: localStorage.getItem('thumbnailSize') ? localStorage.getItem('thumbnailSize') : 200,
+            poster: "NA",
             downloadSize: "NA",
             name: "NA",
             downloadLink: "NA",
@@ -250,6 +243,17 @@ $(document).ready(function () {
             }
         }
 
+    });
+
+    noUiSlider.create(rangeSlider, {
+        start: [vue.$get('thumbnailSize')],
+        range: {
+            'min': [120],
+            'max': [420]
+        }
+    }).on('update', function(a){
+        localStorage.setItem('thumbnailSize', parseInt(a[0]));
+        vue.$set('thumbnailSize',parseInt(a[0]))
     });
 
     vue.getData();
