@@ -36,8 +36,6 @@ $(document).ready(function () {
 
     var rangeSlider = document.getElementById('thumbnailSizeRange');
 
-    $('.checkbox').checkbox();
-
     $('.uploadBtn').click(function () {
         $('.dz')[0].click()
     });
@@ -251,16 +249,36 @@ $(document).ready(function () {
             'min': [120],
             'max': [420]
         }
-    }).on('update', function(a){
+    }).on('update', function (a) {
         localStorage.setItem('thumbnailSize', parseInt(a[0]));
-        vue.$set('thumbnailSize',parseInt(a[0]))
+        vue.$set('thumbnailSize', parseInt(a[0]))
     });
 
+    var refreshInterval;
+    $('.checkbox').checkbox({
+        onChange: function () {
+            if (this.checked == true) {
+                refreshInterval = window.setInterval(function () {
+                    vue.getData();
+                    console.log('Refreshed data');
+                }, 30000);
+                localStorage.setItem('autoRefresh', true);
+            } else {
+                clearInterval(refreshInterval);
+                localStorage.setItem('autoRefresh', false);
+            }
+        }
+    });
+    if (localStorage.getItem('autoRefresh') == true || localStorage.getItem('autoRefresh') == null) {
+        refreshInterval = window.setInterval(function () {
+            vue.getData();
+            console.log('Refreshed data');
+        }, 30000);
+        if (localStorage.getItem('autoRefresh') == null) {
+            $('.checkbox').checkbox('toggle');
+        }
+    }
     vue.getData();
-    window.setInterval(function () {
-        vue.getData();
-        console.log('Refreshed data');
-    }, 30000);
 
 
 });

@@ -9,7 +9,6 @@ import (
 	"os"
 	"io/ioutil"
 	"database/sql"
-	"strings"
 	"regexp"
 )
 
@@ -95,9 +94,6 @@ func main() {
 			var timestamp int64
 			var notes string
 			err = rows.Scan(&d_key, &name, &uploaded_at, &uploaded_by, &length, &thumb_count, &processing, &size, &timestamp, &notes)
-
-			extension := strings.Split(name, ".")[1]
-			name = strings.Split(name, "%23%25%23")[0] + "." + extension
 
 			Rows = append(Rows, DbRow{d_key, name, uploaded_at, length, thumb_count, processing, size, timestamp, notes})
 		}
