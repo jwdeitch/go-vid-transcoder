@@ -103,6 +103,14 @@ body {
     margin-left: 3px;
 }
 
+#settingsPopup {
+    text-align: center;
+}
+
+#settingsPopup label {
+    font-weight: bold;
+}
+
 .topBar .button {
     margin-left: 2px;
 }
