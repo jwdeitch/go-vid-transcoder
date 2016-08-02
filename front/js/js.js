@@ -120,7 +120,6 @@ $(document).ready(function () {
     var reSplit = function () {
         Split(['#videoGrid', '#videoContent'], {
             direction: 'horizontal',
-            minSize: 0,
             sizes: [50, 50],
             gutterSize: 8,
             cursor: 'row-resize',
@@ -139,20 +138,12 @@ $(document).ready(function () {
             video: "NA",
             videoQueue: [],
             inSearch: false,
-            thumbnailSize: localStorage.getItem('thumbnailSize') ? localStorage.getItem('thumbnailSize') : 200,
-            poster: "NA",
-            downloadSize: "NA",
-            name: "NA",
-            downloadLink: "NA",
-            stamp: "NA",
-            notes: "NA",
-            uploaded_at: "NA",
-            d_key: "NA",
-            initialized: false
+            lastAddedVideoQueue: null,
+            thumbnailSize: localStorage.getItem('thumbnailSize') ? localStorage.getItem('thumbnailSize') : 200
         },
         watch: {
             'videoQueue': function () {
-                plyr.setup();
+                plyr.setup(".r" + this.lastAddedVideoQueue);
             }
         },
         methods: {
@@ -244,6 +235,7 @@ $(document).ready(function () {
 
                 if (!videoInQueue) {
                     this.videoQueue.push(videoToAddToQueue);
+                    this.lastAddedVideoQueue = dkey;
                 }
             }
         }

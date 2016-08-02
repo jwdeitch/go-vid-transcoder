@@ -155,7 +155,8 @@ body {
 }
 
 .fileDone {
-    background-color: rgba(56, 185, 66, 0.65); !important;
+    background-color: rgba(56, 185, 66, 0.65);
+!important;
 }
 
 .fileTranscoding {
@@ -163,7 +164,8 @@ body {
 }
 
 .fileUploading {
-    background-color: rgba(185, 56, 56, 0.65); !important;
+    background-color: rgba(185, 56, 56, 0.65);
+!important;
 }
 
 /* Inset, by Dan Eden */
@@ -189,7 +191,6 @@ hr {
 
 .notes {
     display: block;
-    /*margin-bottom: 30px;*/
     color: #888;
     font-size: 20px;
     font-family: sans-serif;
@@ -201,16 +202,16 @@ hr {
 
 /* MASONARY */
 /*#videoGrid {*/
-    /*line-height: 0;*/
-    /*-moz-column-width: 13em;*/
-    /*-webkit-column-width: 13em;*/
-    /*-moz-column-gap: 1em;*/
-    /*-webkit-column-gap: 1em;*/
+/*line-height: 0;*/
+/*-moz-column-width: 13em;*/
+/*-webkit-column-width: 13em;*/
+/*-moz-column-gap: 1em;*/
+/*-webkit-column-gap: 1em;*/
 /*}*/
 
 /**, *:before, *:after {box-sizing:  border-box !important;}*/
 
 /*.thumbnail {*/
-    /*width:  100%;*/
-    /*display: inline-block;*/
+/*width:  100%;*/
+/*display: inline-block;*/
 /*}*/
