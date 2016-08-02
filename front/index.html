@@ -65,7 +65,7 @@ https://s3.amazonaws.com/idrsainput/output/{{video.Stamp}}%23{{video.DisplayKey}
                     <source id="videoSrc" src="{{video}}" type="video/webm">
                 </video>
                 <div class="videoData">
-                    <div class="left"><span class="videoName">{{name}}</span> / {{uploaded_at}}</div>
+                    <div class="left"><span class="videoName">{{name}}</span> / {{TimeToFromNow(uploaded_at)}}</div>
                     <div class="right"><a href="{{downloadLink}}" download><i class="cloud download icon"></i> Download -
                         {{downloadSize}}</a>
                     </div>

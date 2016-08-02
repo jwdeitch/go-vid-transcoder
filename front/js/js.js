@@ -169,6 +169,9 @@ $(document).ready(function () {
             secondsToString: function (seconds) {
                 return moment.duration(seconds, 'seconds').humanize();
             },
+            TimeToFromNow: function(UTCtime) {
+                return moment.utc(UTCtime).local().fromNow()
+            },
             search: function () {
                 that = this;
                 window.clearTimeout(window.timeOutId);
