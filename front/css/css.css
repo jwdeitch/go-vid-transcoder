@@ -174,17 +174,22 @@ hr {
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.videoData {
-    overflow: auto;
+.videoBlock {
+    margin-bottom: 30px;
 }
 
 .videoName {
     font-weight: bold;
 }
 
-.notes {
-    display: inline-block;
+.uploadedAt {
+    display: block;
     margin-top: 20px;
+}
+
+.notes {
+    display: block;
+    /*margin-bottom: 30px;*/
     color: #888;
     font-size: 20px;
     font-family: sans-serif;

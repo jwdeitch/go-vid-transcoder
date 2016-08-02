@@ -58,14 +58,17 @@ https://s3.amazonaws.com/idrsainput/output/{{video.Stamp}}%23{{video.DisplayKey}
         <div class="videoContentContainer">
             <div v-if="videoQueue.length">
                 <div class="videoBlock" v-for="video in videoQueue">
+                    <hr>
+                    <div class="notes">
+                        {{video.Notes}}
+                    </div>
                     <video id="posterSrc"
                            poster="{{video.poster}}"
                            controls>
                         <source id="videoSrc" src="{{video.src}}" type="video/webm">
                     </video>
                     <div class="videoData">
-                        <div class="left"><span class="videoName">{{video.Name}}</span> /
-                            {{TimeToFromNow(video.Uploaded_at)}}
+                        <div class="left"><span class="videoName">{{video.Name}}</span>
                         </div>
                         <div class="right"><a href="{{downloadLink}}" download><i class="cloud download icon"></i>
                             Download
@@ -73,10 +76,9 @@ https://s3.amazonaws.com/idrsainput/output/{{video.Stamp}}%23{{video.DisplayKey}
                             {{video.downloadSize}}</a>
                         </div>
                     </div>
-                    <div class="notes">
-                        {{video.Notes}}
+                    <div class="uploadedAt"> uploaded
+                        {{TimeToFromNow(video.Uploaded_at)}}
                     </div>
-                    <hr>
                 </div>
             </div>
             <div v-else>
