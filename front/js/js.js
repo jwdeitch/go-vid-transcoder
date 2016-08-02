@@ -137,6 +137,7 @@ $(document).ready(function () {
         data: {
             videos: [],
             video: "NA",
+            videoQueue: [],
             inSearch: false,
             thumbnailSize: localStorage.getItem('thumbnailSize') ? localStorage.getItem('thumbnailSize') : 200,
             poster: "NA",
@@ -150,26 +151,15 @@ $(document).ready(function () {
             initialized: false
         },
         watch: {
-            'initialized': function () {
-                player = plyr.setup()[0].plyr;
-            },
-            'd_key': function () {
-                player.source({
-                    type: 'video',
-                    sources: [{
-                        src: "https://s3.amazonaws.com/idrsainput/output/" + vue.$get('stamp') + "%23" + vue.$get('d_key') + "%23.webm",
-                        type: 'video/webm'
-                    }],
-                    poster: 'https://s3.amazonaws.com/idrsainput/output/' + vue.$get('stamp') + '%23' + vue.$get('d_key') + '%23_thumb00001.jpg'
-                });
-                player.play();
+            'videoQueue': function () {
+                plyr.setup();
             }
         },
         methods: {
             secondsToString: function (seconds) {
                 return moment.duration(seconds, 'seconds').humanize();
             },
-            TimeToFromNow: function(UTCtime) {
+            TimeToFromNow: function (UTCtime) {
                 return moment.utc(UTCtime).local().fromNow()
             },
             search: function () {
@@ -230,17 +220,31 @@ $(document).ready(function () {
                 }
                 vue.changeVideo(e);
             },
+            getDownloadLink: function (video) {
+                return "https://s3.amazonaws.com/idrsainput/" + video.Stamp + "%23" + video.DisplayKey + "%23" + video.Name.split('.')[0] + "%2523%2525%2523" + video.DisplayKey + "." + video.Name.split('.')[1];
+            },
+            findVideoByKeyInFullList: function (key) {
+                return this.videos.find(function (video) {
+                    return video.DisplayKey === key;
+                });
+            },
+            findVideoByKeyInQueue: function (key) {
+                return this.videoQueue.find(function (video) {
+                    return video.DisplayKey === key;
+                });
+            },
             changeVideo: function (e) {
-                var d_key = $(e.target).data('d_key');
-                var stamp = $(e.target).data('stamp');
-                var name = $(e.target).data('name');
-                vue.$set('d_key', d_key);
-                vue.$set('stamp', stamp);
-                vue.$set('notes', $(e.target).data('notes'));
-                vue.$set('name', name);
-                vue.$set('uploaded_at', $(e.target).data('uploaded_at'));
-                vue.$set('downloadSize', formatBytes($(e.target).data('size'), 1));
-                vue.$set('downloadLink', "https://s3.amazonaws.com/idrsainput/" + stamp + "%23" + d_key + "%23" + name.split('.')[0] + "%2523%2525%2523" + d_key + "." + name.split('.')[1]);
+                var videoToAddToQueue = this.findVideoByKeyInFullList($(e.target).data('d_key'));
+                var dkey = videoToAddToQueue.DisplayKey;
+                var videoInQueue = this.findVideoByKeyInQueue(dkey);
+                videoToAddToQueue.downloadSize = formatBytes(videoToAddToQueue.PreTranscodeSize);
+                videoToAddToQueue.downloadLink = this.getDownloadLink(videoToAddToQueue);
+                videoToAddToQueue.poster = 'https://s3.amazonaws.com/idrsainput/output/' + videoToAddToQueue.Stamp + '%23' + dkey + '%23_thumb00001.jpg';
+                videoToAddToQueue.src = "https://s3.amazonaws.com/idrsainput/output/" + videoToAddToQueue.Stamp + "%23" + dkey + "%23.webm";
+
+                if (!videoInQueue) {
+                    this.videoQueue.push(videoToAddToQueue);
+                }
             }
         }
 

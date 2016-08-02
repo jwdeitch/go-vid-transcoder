@@ -48,8 +48,6 @@
             <div class="ui fluid image">
                 <img v-on:click="handelThumbClick" v-on:mousemove="thumbnailScroll" src="
 https://s3.amazonaws.com/idrsainput/output/{{video.Stamp}}%23{{video.DisplayKey}}%23_thumb00001.jpg"
-                     data-notes="{{video.Notes}}"
-                     data-size="{{video.PreTranscodeSize}}" data-name="{{video.Name}}"
                      data-d_key="{{video.DisplayKey}}" data-stamp="{{video.Stamp}}" data-tcount="{{video.ThumbCount}}"
                      data-uploaded_at="{{video.Uploaded_at}}" style="max-width: {{thumbnailSize}}px;">
                 <div class="ui bottom right attached label">{{secondsToString(video.Length)}}</div>
@@ -58,21 +56,27 @@ https://s3.amazonaws.com/idrsainput/output/{{video.Stamp}}%23{{video.DisplayKey}
     </div>
     <div id="videoContent" class="split content split-horizontal">
         <div class="videoContentContainer">
-            <div v-if="initialized">
-                <video id="posterSrc"
-                       poster="{{poster}}"
-                       controls>
-                    <source id="videoSrc" src="{{video}}" type="video/webm">
-                </video>
-                <div class="videoData">
-                    <div class="left"><span class="videoName">{{name}}</span> / {{TimeToFromNow(uploaded_at)}}</div>
-                    <div class="right"><a href="{{downloadLink}}" download><i class="cloud download icon"></i> Download -
-                        {{downloadSize}}</a>
+            <div v-if="videoQueue.length">
+                <div class="videoBlock" v-for="video in videoQueue">
+                    <video id="posterSrc"
+                           poster="{{video.poster}}"
+                           controls>
+                        <source id="videoSrc" src="{{video.src}}" type="video/webm">
+                    </video>
+                    <div class="videoData">
+                        <div class="left"><span class="videoName">{{video.Name}}</span> /
+                            {{TimeToFromNow(video.Uploaded_at)}}
+                        </div>
+                        <div class="right"><a href="{{downloadLink}}" download><i class="cloud download icon"></i>
+                            Download
+                            -
+                            {{video.downloadSize}}</a>
+                        </div>
                     </div>
-                </div>
-            <hr>
-                <div class="left notes">
-                    {{notes}}
+                    <div class="notes">
+                        {{video.Notes}}
+                    </div>
+                    <hr>
                 </div>
             </div>
             <div v-else>

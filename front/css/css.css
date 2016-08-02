@@ -111,6 +111,10 @@ body {
     font-weight: bold;
 }
 
+.videoBlock {
+    display: block;
+}
+
 .topBar .button {
     margin-left: 2px;
 }
