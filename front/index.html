@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/progress.min.css">
     <link rel="stylesheet" href="css/nouislider.css">
     <link rel="stylesheet" href="css/checkbox.min.css">
+    <link rel="stylesheet" href="css/dropdown.min.css">
     <link rel="stylesheet" href="css/transition.min.css">
 </head>
 <body>
@@ -28,9 +29,26 @@
             <div id="thumbnailSizeRange"></div>
             <label>Thumbnail Size Range</label>
             <hr>
-            <div class="ui toggle checkbox">
+            <div class="ui toggle checkbox autoRefresh">
                 <input type="checkbox" name="public">
                 <label>Auto-refresh</label>
+            </div>
+            <hr>
+            <div class="ui selection dropdown">
+                <input type="hidden" name="gender">
+                <i class="dropdown icon"></i>
+                <div class="default text">Video Click Behavior</div>
+                <div class="menu">
+                    <div class="item" data-value="Queue">Queue</div>
+                    <div class="item" data-value="Stack">Stack</div>
+                    <div class="item" data-value="Overwrite">Overwrite</div>
+                </div>
+            </div>
+            <label>Video Click Behavior</label>
+            <hr>
+            <div class="ui toggle checkbox AutoPlay">
+                <input type="checkbox" name="public">
+                <label>Auto-play queue</label>
             </div>
         </div>
         <button class="ui small blue labeled icon button uploadBtn">
@@ -106,5 +124,6 @@ https://s3.amazonaws.com/idrsainput/output/{{video.Stamp}}%23{{video.DisplayKey}
 <script src="js/progress.min.js"></script>
 <script src="js/nouislider.min.js"></script>
 <script src="js/checkbox.min.js"></script>
+<script src="js/dropdown.min.js"></script>
 <script src="js/js.js"></script>
 </html>

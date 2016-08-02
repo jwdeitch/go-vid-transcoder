@@ -46,7 +46,7 @@ $(document).ready(function () {
         position: 'bottom center',
         delay: {
             show: 20,
-            hide: 200
+            hide: 500
         }
     });
 
@@ -140,6 +140,16 @@ $(document).ready(function () {
             inSearch: false,
             lastAddedVideoQueue: null,
             thumbnailSize: localStorage.getItem('thumbnailSize') ? localStorage.getItem('thumbnailSize') : 200
+        },
+        computed: {
+            'clickBehavior': function () {
+                var clickBehavior = localStorage.getItem('clickBehavior');
+                if (clickBehavior) {
+                    return clickBehavior;
+                } else {
+                    return "Queue";
+                }
+            }
         },
         watch: {
             'videoQueue': function () {
@@ -254,7 +264,7 @@ $(document).ready(function () {
     });
 
     var refreshInterval;
-    $('.checkbox').checkbox({
+    $('.autoRefresh').checkbox({
         onChange: function () {
             if (this.checked == true) {
                 refreshInterval = window.setInterval(function () {
@@ -274,10 +284,19 @@ $(document).ready(function () {
             console.log('Refreshed data');
         }, 30000);
         if (localStorage.getItem('autoRefresh') == null) {
-            $('.checkbox').checkbox('toggle');
+            $('.autoRefresh').checkbox('toggle');
         }
     }
     vue.getData();
 
+    $('.ui.dropdown').dropdown({
+        onChange: function (newBehavior) {
+            localStorage.setItem('clickBehavior', newBehavior);
+            vue.$set('clickBehavior', newBehavior);
+        }
+    }).dropdown('set selected', vue.clickBehavior);
+
+
+    console.log(vue.clickBehavior)
 
 });
