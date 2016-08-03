@@ -131,6 +131,20 @@ body {
     float: right;
 }
 
+.clearBtn {
+    display: inline-block;
+    background-color: #ececec;
+    border: 1px solid grey;
+    cursor: pointer;
+    color: #6f6f6f;
+    padding: 2px 6px 2px 6px;
+    border-radius: 3px;
+}
+
+.clearBtn:hover {
+    background-color: #dedede;
+}
+
 #searchBar {
     display: inline-flex;
     width: 50%;

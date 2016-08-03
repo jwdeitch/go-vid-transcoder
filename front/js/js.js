@@ -200,6 +200,9 @@ $(document).ready(function () {
 
                 target.attr('src', "https://s3.amazonaws.com/idrsainput/output/" + stamp + "%23" + d_key + "%23_thumb" + this.padThumbnail(thumbToShow) + ".jpg")
             },
+            clearQueue: function() {
+                this.videoQueue = [];
+            },
             getData: function () {
                 $.get(config.webserviceLambda).done(function (data) {
                     data.map(function (obj) {

@@ -79,6 +79,7 @@ https://s3.amazonaws.com/idrsainput/output/{{video.Stamp}}%23{{video.DisplayKey}
     <div id="videoContent" class="split content split-horizontal">
         <div class="videoContentContainer">
             <div v-if="videoQueue.length">
+                <div class="clearBtn" v-if="clickBehavior != 'Overwrite'" v-on:click="clearQueue">clear all</div>
                 <div v-for="video in index,videoQueue" class="videoBlock">
                     <hr>
                     <div class="notes">
