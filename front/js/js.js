@@ -140,12 +140,21 @@ $(document).ready(function () {
             videoQueue: [],
             inSearch: false,
             clickBehavior: 'Queue',
+            autoPlayNextVideo: false,
             lastAddedVideoQueue: null,
             thumbnailSize: localStorage.getItem('thumbnailSize') ? localStorage.getItem('thumbnailSize') : 200
         },
         watch: {
             'videoQueue': function () {
                 plyr.setup(".r" + this.lastAddedVideoQueue);
+                $(".r" + this.lastAddedVideoQueue).on('ended', function (e) {
+                    if (vue.autoPlayNextVideo) {
+                        var currentIndex = $(e.target).data('index');
+                        var nextVideo = currentIndex + 1;
+                        $('[data-index="' + nextVideo + '"]')[0].play();
+                        vue.videoQueue.splice(currentIndex,1);
+                    }
+                });
             }
         },
         methods: {
@@ -181,11 +190,11 @@ $(document).ready(function () {
                     }
                 }, 500);
             },
-            padThumbnail: function(thumbToShow) {
+            padThumbnail: function (thumbToShow) {
                 return "00000".substring(0, 5 - thumbToShow.toString().length) + thumbToShow;
             },
-            thumbPreviewDefault: function(tCount) {
-                return this.padThumbnail(Math.floor(tCount/2));
+            thumbPreviewDefault: function (tCount) {
+                return this.padThumbnail(Math.floor(tCount / 2));
             },
             thumbnailScroll: function (e) {
                 var target = $(e.target);
@@ -201,7 +210,7 @@ $(document).ready(function () {
 
                 target.attr('src', "https://s3.amazonaws.com/idrsainput/output/" + stamp + "%23" + d_key + "%23_thumb" + this.padThumbnail(thumbToShow) + ".jpg")
             },
-            clearQueue: function() {
+            clearQueue: function () {
                 this.videoQueue = [];
             },
             getData: function () {
@@ -235,7 +244,7 @@ $(document).ready(function () {
                 var videoInQueue = this.findVideoByKeyInQueue(dkey);
                 videoToAddToQueue.downloadSize = formatBytes(videoToAddToQueue.PreTranscodeSize);
                 videoToAddToQueue.downloadLink = this.getDownloadLink(videoToAddToQueue);
-                videoToAddToQueue.poster = 'https://s3.amazonaws.com/idrsainput/output/' + videoToAddToQueue.Stamp + '%23' + dkey + '%23_thumb'+this.thumbPreviewDefault(videoToAddToQueue.ThumbCount)+'.jpg';
+                videoToAddToQueue.poster = 'https://s3.amazonaws.com/idrsainput/output/' + videoToAddToQueue.Stamp + '%23' + dkey + '%23_thumb' + this.thumbPreviewDefault(videoToAddToQueue.ThumbCount) + '.jpg';
                 videoToAddToQueue.src = "https://s3.amazonaws.com/idrsainput/output/" + videoToAddToQueue.Stamp + "%23" + dkey + "%23.webm";
 
                 if (!videoInQueue) {
@@ -295,6 +304,27 @@ $(document).ready(function () {
         }
     }
     vue.getData();
+
+    $('.AutoPlay').checkbox({
+        onChange: function () {
+            if (this.checked == true) {
+                localStorage.setItem('autoPlay', true);
+                vue.autoPlayNextVideo = true;
+                $('[data-index="0"] .plyr')[0].plyr.play();
+            } else {
+                localStorage.setItem('autoPlay', false);
+            }
+        }
+    });
+
+    if (localStorage.getItem('autoPlay') == "true" || localStorage.getItem('autoPlay') == null) {
+        $('.AutoPlay').checkbox('check');
+        vue.autoPlayNextVideo = true;
+    }
+
+    if (localStorage.getItem('autoPlay') == "false") {
+        $('.AutoPlay').checkbox('uncheck');
+    }
 
     var clickBehavior = localStorage.getItem('clickBehavior');
     if (clickBehavior) {
