@@ -8,25 +8,6 @@ function formatBytes(bytes, decimals) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
 
-function processFilename(rawFN) {
-    if (rawFN.lastIndexOf(".") == -1) {
-        return;
-    }
-
-    extension = rawFN.substring(rawFN.lastIndexOf("."), rawFN.length).replace(/\W/g, '');
-    filename = rawFN.substring(0, rawFN.lastIndexOf(".")).replace(/[^a-z0-9+]+/gi, " ").trim().replace(/ /g, "_");
-
-    if (filename.length == 0) {
-        filename = "I_did_not_provide_a_valid_filename"
-    }
-
-    if (extension.length == 0) {
-        return false;
-    }
-
-    return filename + "." + extension;
-}
-
 config = {
     webserviceLambda: "https://oizgt5pjf8.execute-api.us-east-1.amazonaws.com/prod/aws-vid-transcoder_webService"
 };
@@ -147,14 +128,18 @@ $(document).ready(function () {
         watch: {
             'videoQueue': function () {
                 plyr.setup(".r" + this.lastAddedVideoQueue);
-                $(".r" + this.lastAddedVideoQueue).on('ended', function (e) {
-                    if (vue.autoPlayNextVideo) {
-                        var currentIndex = $(e.target).data('index');
-                        var nextVideo = currentIndex + 1;
-                        $('[data-index="' + nextVideo + '"]')[0].play();
-                        vue.videoQueue.splice(currentIndex,1);
-                    }
-                });
+                if (vue.clickBehavior == "Overwrite" && vue.autoPlayNextVideo) {
+                    $('[data-index="0"]')[0].play();
+                } else {
+                    $(".r" + this.lastAddedVideoQueue).on('ended', function (e) {
+                        if (vue.autoPlayNextVideo) {
+                            var currentIndex = $(e.target).data('index');
+                            var nextVideo = currentIndex + 1;
+                            $('[data-index="' + nextVideo + '"]')[0].play();
+                            vue.videoQueue.splice(currentIndex, 1);
+                        }
+                    });
+                }
             }
         },
         methods: {
@@ -310,8 +295,11 @@ $(document).ready(function () {
             if (this.checked == true) {
                 localStorage.setItem('autoPlay', true);
                 vue.autoPlayNextVideo = true;
-                $('[data-index="0"] .plyr')[0].plyr.play();
+                if (vue.videoQueue.length) {
+                    $('[data-index="0"] .plyr')[0].plyr.play();
+                }
             } else {
+                vue.autoPlayNextVideo = false;
                 localStorage.setItem('autoPlay', false);
             }
         }
