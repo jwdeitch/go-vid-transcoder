@@ -180,6 +180,12 @@ $(document).ready(function () {
                     }
                 }, 500);
             },
+            padThumbnail: function(thumbToShow) {
+                return "00000".substring(0, 5 - thumbToShow.toString().length) + thumbToShow;
+            },
+            thumbPreviewDefault: function(tCount) {
+                return this.padThumbnail(Math.floor(tCount/2));
+            },
             thumbnailScroll: function (e) {
                 var target = $(e.target);
                 var d_key = target.data('d_key');
@@ -191,8 +197,8 @@ $(document).ready(function () {
                 if (thumbToShow == 0) {
                     thumbToShow = 1
                 }
-                paddedThumb = "00000".substring(0, 5 - thumbToShow.toString().length) + thumbToShow;
-                target.attr('src', "https://s3.amazonaws.com/idrsainput/output/" + stamp + "%23" + d_key + "%23_thumb" + paddedThumb + ".jpg")
+
+                target.attr('src', "https://s3.amazonaws.com/idrsainput/output/" + stamp + "%23" + d_key + "%23_thumb" + this.padThumbnail(thumbToShow) + ".jpg")
             },
             getData: function () {
                 $.get(config.webserviceLambda).done(function (data) {
@@ -225,7 +231,7 @@ $(document).ready(function () {
                 var videoInQueue = this.findVideoByKeyInQueue(dkey);
                 videoToAddToQueue.downloadSize = formatBytes(videoToAddToQueue.PreTranscodeSize);
                 videoToAddToQueue.downloadLink = this.getDownloadLink(videoToAddToQueue);
-                videoToAddToQueue.poster = 'https://s3.amazonaws.com/idrsainput/output/' + videoToAddToQueue.Stamp + '%23' + dkey + '%23_thumb00001.jpg';
+                videoToAddToQueue.poster = 'https://s3.amazonaws.com/idrsainput/output/' + videoToAddToQueue.Stamp + '%23' + dkey + '%23_thumb'+this.thumbPreviewDefault(videoToAddToQueue.ThumbCount)+'.jpg';
                 videoToAddToQueue.src = "https://s3.amazonaws.com/idrsainput/output/" + videoToAddToQueue.Stamp + "%23" + dkey + "%23.webm";
 
                 if (!videoInQueue) {
