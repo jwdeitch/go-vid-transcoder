@@ -122,6 +122,7 @@ $(document).ready(function () {
             direction: 'horizontal',
             sizes: [50, 50],
             gutterSize: 8,
+            minSize: 300,
             cursor: 'row-resize',
             "onDragStart": function () {
                 console.log($('#videoContent').width())
