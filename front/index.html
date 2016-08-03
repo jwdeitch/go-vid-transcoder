@@ -64,7 +64,7 @@
     <div id="videoGrid" class="split content split-horizontal">
         <div class="thumbnail" v-for="video in videos" v-if="video.Processing == false">
             <div class="ui fluid image">
-                <img v-on:click="handelThumbClick" v-on:mousemove="thumbnailScroll" src="
+                <img v-on:click="changeVideo" v-on:mousemove="thumbnailScroll" src="
 https://s3.amazonaws.com/idrsainput/output/{{video.Stamp}}%23{{video.DisplayKey}}%23_thumb00001.jpg"
                      data-d_key="{{video.DisplayKey}}" data-stamp="{{video.Stamp}}" data-tcount="{{video.ThumbCount}}"
                      data-uploaded_at="{{video.Uploaded_at}}" style="max-width: {{thumbnailSize}}px;">

@@ -138,18 +138,9 @@ $(document).ready(function () {
             video: "NA",
             videoQueue: [],
             inSearch: false,
+            clickBehavior: 'Queue',
             lastAddedVideoQueue: null,
             thumbnailSize: localStorage.getItem('thumbnailSize') ? localStorage.getItem('thumbnailSize') : 200
-        },
-        computed: {
-            'clickBehavior': function () {
-                var clickBehavior = localStorage.getItem('clickBehavior');
-                if (clickBehavior) {
-                    return clickBehavior;
-                } else {
-                    return "Queue";
-                }
-            }
         },
         watch: {
             'videoQueue': function () {
@@ -215,12 +206,6 @@ $(document).ready(function () {
                     }
                 });
             },
-            handelThumbClick: function (e) {
-                if (!vue.$get('initialized')) {
-                    vue.$set('initialized', true);
-                }
-                vue.changeVideo(e);
-            },
             getDownloadLink: function (video) {
                 return "https://s3.amazonaws.com/idrsainput/" + video.Stamp + "%23" + video.DisplayKey + "%23" + video.Name.split('.')[0] + "%2523%2525%2523" + video.DisplayKey + "." + video.Name.split('.')[1];
             },
@@ -244,7 +229,19 @@ $(document).ready(function () {
                 videoToAddToQueue.src = "https://s3.amazonaws.com/idrsainput/output/" + videoToAddToQueue.Stamp + "%23" + dkey + "%23.webm";
 
                 if (!videoInQueue) {
-                    this.videoQueue.push(videoToAddToQueue);
+                    if (this.clickBehavior == 'Queue') {
+                        this.videoQueue.push(videoToAddToQueue);
+                    }
+
+                    if (this.clickBehavior == 'Stack') {
+                        this.videoQueue.unshift(videoToAddToQueue);
+                    }
+
+                    if (this.clickBehavior == 'Overwrite') {
+                        this.videoQueue = [];
+                        this.videoQueue.push(videoToAddToQueue);
+                    }
+
                     this.lastAddedVideoQueue = dkey;
                 }
             }
@@ -289,14 +286,16 @@ $(document).ready(function () {
     }
     vue.getData();
 
+    var clickBehavior = localStorage.getItem('clickBehavior');
+    if (clickBehavior) {
+        vue.$set('clickBehavior', clickBehavior);
+    }
+
     $('.ui.dropdown').dropdown({
         onChange: function (newBehavior) {
             localStorage.setItem('clickBehavior', newBehavior);
             vue.$set('clickBehavior', newBehavior);
         }
     }).dropdown('set selected', vue.clickBehavior);
-
-
-    console.log(vue.clickBehavior)
 
 });
