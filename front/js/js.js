@@ -183,7 +183,7 @@ $(document).ready(function () {
                 }, 500);
             },
             getSearchResults: function () {
-                vue.$set('loading',true);
+                vue.$set('loading', true);
                 var limit = vue.pagination.limit + 200;
                 $.ajax({
                     type: "GET",
@@ -195,7 +195,7 @@ $(document).ready(function () {
                         input.parent().addClass('loading');
                     },
                     success: function (data) {
-                        vue.$set('loading',false);
+                        vue.$set('loading', false);
                         if (data) {
                             vue.$set('videos', data);
                             vue.$set('pagination.skip', vue.$get('pagination.limit'));
@@ -232,10 +232,10 @@ $(document).ready(function () {
             getData: function () {
                 $.get(config.webserviceLambda +
                     "?skip=" + vue.pagination.skip +
-                    "&limit=" + vue.pagination.limit, function() {
-                    vue.$set('loading',true);
+                    "&limit=" + vue.pagination.limit, function () {
+                    vue.$set('loading', true);
                 }).done(function (data) {
-                    vue.$set('loading',false);
+                    vue.$set('loading', false);
                     if (data) {
                         vue.$set('pagination.skip', vue.$get('pagination.limit'));
                         vue.$set('pagination.limit', vue.$get('pagination.limit') + 200);
@@ -244,7 +244,7 @@ $(document).ready(function () {
                                 $('.popup .' + obj.DisplayKey + ' .uploadBar .uploadProgress').html("Done!").addClass('fileDone').removeClass('fileTranscoding');
                             }
                         });
-                        if (!vue.$get('inSearch')) {
+                        if (!vue.$get('inSearch') && localStorage.getItem('autoRefresh')) {
                             vue.$set('videos', data);
                         }
                     }
@@ -304,30 +304,28 @@ $(document).ready(function () {
         vue.$set('thumbnailSize', parseInt(a[0]))
     });
 
+    window.setInterval(function () {
+        vue.getData();
+        console.log('Refreshed data');
+    }, 30000);
+
     var refreshInterval;
     $('.autoRefresh').checkbox({
         onChange: function () {
             if (this.checked == true) {
-                refreshInterval = window.setInterval(function () {
-                    vue.getData();
-                    console.log('Refreshed data');
-                }, 30000);
                 localStorage.setItem('autoRefresh', true);
             } else {
-                clearInterval(refreshInterval);
                 localStorage.setItem('autoRefresh', false);
             }
         }
     });
-    if (localStorage.getItem('autoRefresh') == true || localStorage.getItem('autoRefresh') == null) {
-        refreshInterval = window.setInterval(function () {
-            vue.getData();
-            console.log('Refreshed data');
-        }, 30000);
-        if (localStorage.getItem('autoRefresh') == null) {
-            $('.autoRefresh').checkbox('toggle');
-        }
+
+    if (localStorage.getItem('autoRefresh') == null || localStorage.getItem('autoRefresh') == true) {
+        $('.autoRefresh').checkbox('check');
+    } else {
+        $('.autoRefresh').checkbox('uncheck');
     }
+
     vue.getData();
 
     $('.AutoPlay').checkbox({
@@ -369,10 +367,10 @@ $(document).ready(function () {
     var isWorking = 0;
     // Thanks! http://stackoverflow.com/a/9613694/4603498
     $('#videoGrid').scroll(function (a, b) {
-        if (isWorking==1) {
+        if (isWorking == 1) {
             return
         }
-        isWorking=1;
+        isWorking = 1;
         lastDisplayKey = vue.videos[vue.videos.length - 1].DisplayKey;
         if (isScrolledIntoView($('[data-d_key="' + lastDisplayKey + '"]'))) {
             if (vue.inSearch) {
@@ -381,9 +379,9 @@ $(document).ready(function () {
                 vue.getData()
             }
         }
-        setTimeout(function(){
-            isWorking=0
-        },700);
+        setTimeout(function () {
+            isWorking = 0
+        }, 700);
     });
 
 });
