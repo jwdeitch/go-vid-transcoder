@@ -190,7 +190,7 @@ $(document).ready(function () {
                     url: config.webserviceLambda +
                     "?skip=" + vue.pagination.limit +
                     "&limit=" + limit +
-                    '?q=' + input.val(),
+                    '&q=' + input.val(),
                     beforeSend: function () {
                         input.parent().addClass('loading');
                     },
