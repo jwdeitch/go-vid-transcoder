@@ -296,7 +296,7 @@ $(document).ready(function () {
                 localStorage.setItem('autoPlay', true);
                 vue.autoPlayNextVideo = true;
                 if (vue.videoQueue.length) {
-                    $('[data-index="0"] .plyr')[0].plyr.play();
+                    $('[data-index="0"]')[0].play()
                 }
             } else {
                 vue.autoPlayNextVideo = false;
