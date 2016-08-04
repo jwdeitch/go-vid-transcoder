@@ -8,6 +8,17 @@ function formatBytes(bytes, decimals) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
 
+// Thanks! http://stackoverflow.com/a/488073/4603498
+function isScrolledIntoView(elem) {
+    var docViewTop = $(window).scrollTop();
+    var docViewBottom = docViewTop + $(window).height();
+
+    var elemTop = $(elem).offset().top;
+    var elemBottom = elemTop + $(elem).height();
+
+    return ((elemBottom <= docViewBottom + 200) && (elemTop >= docViewTop - 200));
+}
+
 config = {
     webserviceLambda: "https://oizgt5pjf8.execute-api.us-east-1.amazonaws.com/prod/aws-vid-transcoder_webService"
 };
@@ -120,6 +131,11 @@ $(document).ready(function () {
             video: "NA",
             videoQueue: [],
             inSearch: false,
+            loading: false,
+            pagination: {
+                'skip': 0,
+                'limit': 200
+            },
             clickBehavior: 'Queue',
             autoPlayNextVideo: false,
             lastAddedVideoQueue: null,
@@ -157,23 +173,38 @@ $(document).ready(function () {
 
                     if (input.val().length > 0) {
                         vue.$set('inSearch', true);
-                        $.ajax({
-                            type: "GET",
-                            url: 'https://oizgt5pjf8.execute-api.us-east-1.amazonaws.com/prod/aws-vid-transcoder_webService' + '?q=' + input.val(),
-                            beforeSend: function () {
-                                input.parent().addClass('loading');
-                            },
-                            success: function (data) {
-                                vue.$set('videos', data);
-                                input.parent().removeClass('loading');
-                            },
-                            dataType: 'json'
-                        });
+                        vue.$set('pagination.skip', 0);
+                        vue.$set('pagination.limit', 0);
+                        vue.getSearchResults();
                     } else {
                         that.$set('inSearch', false);
                         vue.getData()
                     }
                 }, 500);
+            },
+            getSearchResults: function () {
+                vue.$set('loading',true);
+                var limit = vue.pagination.limit + 200;
+                $.ajax({
+                    type: "GET",
+                    url: config.webserviceLambda +
+                    "?skip=" + vue.pagination.limit +
+                    "&limit=" + limit +
+                    '?q=' + input.val(),
+                    beforeSend: function () {
+                        input.parent().addClass('loading');
+                    },
+                    success: function (data) {
+                        vue.$set('loading',false);
+                        if (data) {
+                            vue.$set('videos', data);
+                            vue.$set('pagination.skip', vue.$get('pagination.limit'));
+                            vue.$set('pagination.limit', vue.$get('pagination.limit') + 200);
+                        }
+                        input.parent().removeClass('loading');
+                    },
+                    dataType: 'json'
+                });
             },
             padThumbnail: function (thumbToShow) {
                 return "00000".substring(0, 5 - thumbToShow.toString().length) + thumbToShow;
@@ -199,14 +230,23 @@ $(document).ready(function () {
                 this.videoQueue = [];
             },
             getData: function () {
-                $.get(config.webserviceLambda).done(function (data) {
-                    data.map(function (obj) {
-                        if (obj.Processing === false) {
-                            $('.popup .' + obj.DisplayKey + ' .uploadBar .uploadProgress').html("Done!").addClass('fileDone').removeClass('fileTranscoding');
+                $.get(config.webserviceLambda +
+                    "?skip=" + vue.pagination.skip +
+                    "&limit=" + vue.pagination.limit, function() {
+                    vue.$set('loading',true);
+                }).done(function (data) {
+                    vue.$set('loading',false);
+                    if (data) {
+                        vue.$set('pagination.skip', vue.$get('pagination.limit'));
+                        vue.$set('pagination.limit', vue.$get('pagination.limit') + 200);
+                        data.map(function (obj) {
+                            if (obj.Processing === false) {
+                                $('.popup .' + obj.DisplayKey + ' .uploadBar .uploadProgress').html("Done!").addClass('fileDone').removeClass('fileTranscoding');
+                            }
+                        });
+                        if (!vue.$get('inSearch')) {
+                            vue.$set('videos', data);
                         }
-                    });
-                    if (!vue.$get('inSearch')) {
-                        vue.$set('videos', data);
                     }
                 });
             },
@@ -325,5 +365,25 @@ $(document).ready(function () {
             vue.$set('clickBehavior', newBehavior);
         }
     }).dropdown('set selected', vue.clickBehavior);
+
+    var isWorking = 0;
+    // Thanks! http://stackoverflow.com/a/9613694/4603498
+    $('#videoGrid').scroll(function (a, b) {
+        if (isWorking==1) {
+            return
+        }
+        isWorking=1;
+        lastDisplayKey = vue.videos[vue.videos.length - 1].DisplayKey;
+        if (isScrolledIntoView($('[data-d_key="' + lastDisplayKey + '"]'))) {
+            if (vue.inSearch) {
+                vue.getSearchResults()
+            } else {
+                vue.getData()
+            }
+        }
+        setTimeout(function(){
+            isWorking=0
+        },700);
+    });
 
 });

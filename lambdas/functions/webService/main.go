@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"database/sql"
 	"regexp"
+	"strconv"
 )
 
 type Env struct {
@@ -37,7 +38,9 @@ type DbRow struct {
 type query struct {
 	Params struct {
 		       Querystring struct {
-					   Q string `json:"q"`
+					   Q     *string `json:"q,omitempty"`
+					   Limit string `json:"limit"`
+					   Skip  string `json:"skip"`
 				   } `json:"querystring"`
 	       } `json:"params"`
 }
@@ -65,17 +68,24 @@ func main() {
 		var rows *sql.Rows
 
 		var searchQuery query;
+		json.Unmarshal(eventString, &searchQuery)
 
-		if (json.Unmarshal(eventString, &searchQuery) == nil) {
-			reg, err := regexp.Compile("[^A-Za-z0-9]+")
-			if err != nil {
-				log.Fatal(err)
-			}
-			keywords := "%"+reg.ReplaceAllString(searchQuery.Params.Querystring.Q, "_")+"%"
+		reg, err := regexp.Compile("[^A-Za-z0-9]+")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		skip, err := strconv.Atoi(searchQuery.Params.Querystring.Skip)
+		limit, err := strconv.Atoi(searchQuery.Params.Querystring.Limit)
+
+		if (searchQuery.Params.Querystring.Q != nil) {
+			keywords := "%" + reg.ReplaceAllString(*searchQuery.Params.Querystring.Q, "_") + "%"
+			rows, err = db.Query("SELECT * FROM videos where name like ? and private = 0 order by processing desc, uploaded_at desc LIMIT ?, ?", keywords, skip, limit)
 			l.Println(keywords)
-			rows, err = db.Query("SELECT * FROM videos where name like ? order by processing desc, uploaded_at desc LIMIT 200", keywords)
+			l.Println(skip)
+			l.Println(limit)
 		} else {
-			rows, err = db.Query("SELECT * FROM videos order by processing desc, uploaded_at desc LIMIT 200")
+			rows, err = db.Query("SELECT * FROM videos where private = 0 order by processing desc, uploaded_at desc LIMIT ?, ?", skip, limit)
 		}
 
 		if err != nil {
@@ -93,7 +103,8 @@ func main() {
 			var size int64
 			var timestamp int64
 			var notes string
-			err = rows.Scan(&d_key, &name, &uploaded_at, &uploaded_by, &length, &thumb_count, &processing, &size, &timestamp, &notes)
+			var private string
+			err = rows.Scan(&d_key, &name, &uploaded_at, &uploaded_by, &length, &thumb_count, &processing, &size, &timestamp, &notes, &private)
 
 			Rows = append(Rows, DbRow{d_key, name, uploaded_at, length, thumb_count, processing, size, timestamp, notes})
 		}
