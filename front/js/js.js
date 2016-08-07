@@ -244,7 +244,9 @@ $(document).ready(function () {
                                 $('.popup .' + obj.DisplayKey + ' .uploadBar .uploadProgress').html("Done!").addClass('fileDone').removeClass('fileTranscoding');
                             }
                         });
-                        if (!vue.$get('inSearch') && localStorage.getItem('autoRefresh')) {
+                        if (!vue.$get('inSearch') && localStorage.getItem('autoRefresh') == "true") {
+                            vue.$set('videos', data);
+                        } else if (vue.videos.length == 0) {
                             vue.$set('videos', data);
                         }
                     }
@@ -313,14 +315,14 @@ $(document).ready(function () {
     $('.autoRefresh').checkbox({
         onChange: function () {
             if (this.checked == true) {
-                localStorage.setItem('autoRefresh', true);
+                localStorage.setItem('autoRefresh', "true");
             } else {
-                localStorage.setItem('autoRefresh', false);
+                localStorage.setItem('autoRefresh', "false");
             }
         }
     });
 
-    if (localStorage.getItem('autoRefresh') == null || localStorage.getItem('autoRefresh') == true) {
+    if (localStorage.getItem('autoRefresh') == null || localStorage.getItem('autoRefresh') == "true") {
         $('.autoRefresh').checkbox('check');
     } else {
         $('.autoRefresh').checkbox('uncheck');
