@@ -33,11 +33,15 @@ body {
     font-family: 'Oleo Script Swash Caps', cursive;
     display: inline-block;
     font-size: 2em;
-    margin-left: 20px;
-    top: 15px;
-    position: absolute;
-    margin-right: auto;
-    text-align: center;
+    margin-top: 7px;
+}
+
+.ui.blue.button {
+    border: 1px solid rgba(29, 56, 97, 0.51);
+}
+
+.ui.button {
+    border: 1px solid rgba(128, 128, 128, 0.26);
 }
 
 .content {
@@ -69,6 +73,7 @@ body {
 
 .topBar {
     height: 40px;
+    text-align: center;
 }
 
 .splitContainer {
@@ -161,7 +166,8 @@ body {
 
 #searchBar {
     display: inline-flex;
-    width: 50%;
+    width: 20%;
+    float: left;
 }
 
 .uploadBar {

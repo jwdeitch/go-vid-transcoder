@@ -112,7 +112,7 @@ $(document).ready(function () {
     var reSplit = function () {
         Split(['#videoGrid', '#videoContent'], {
             direction: 'horizontal',
-            sizes: [50, 50],
+            sizes: [52, 48],
             gutterSize: 8,
             minSize: 300,
             cursor: 'row-resize',
