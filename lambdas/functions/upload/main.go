@@ -85,7 +85,7 @@ func main() {
 		var s3Upload S3UploadedDocument
 		json.Unmarshal(eventString, &s3Upload)
 
-		insStmt, err := db.Prepare("INSERT INTO videos VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+		insStmt, err := db.Prepare("INSERT INTO videos VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 		if err != nil {
 			l.Println(err.Error())
 		}
