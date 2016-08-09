@@ -175,8 +175,6 @@ $(document).ready(function () {
 
                     if (input.val().length > 0) {
                         vue.$set('inSearch', true);
-                        vue.$set('pagination.skip', 0);
-                        vue.$set('pagination.limit', 0);
                         vue.getSearchResults();
                     } else {
                         that.$set('inSearch', false);
@@ -202,8 +200,6 @@ $(document).ready(function () {
                             vue.$set('stats', data[data.length-1]);
                             data.splice(-1,1);
                             vue.$set('videos', data);
-                            vue.$set('pagination.skip', vue.$get('pagination.limit'));
-                            vue.$set('pagination.limit', vue.$get('pagination.limit') + 200);
                         }
                         input.parent().removeClass('loading');
                     },
