@@ -35,6 +35,13 @@ type DbRow struct {
 	Notes            string
 }
 
+type StatRow struct {
+	T_length int64
+	T_size   int64
+	T_count  int
+	T_users  int
+}
+
 type query struct {
 	Params struct {
 		       Querystring struct {
@@ -66,6 +73,7 @@ func main() {
 		defer db.Close()
 
 		var rows *sql.Rows
+		var statRows *sql.Rows
 
 		var searchQuery query;
 		json.Unmarshal(eventString, &searchQuery)
@@ -84,14 +92,18 @@ func main() {
 			l.Println(keywords)
 			l.Println(skip)
 			l.Println(limit)
+
+			statRows, err = db.Query("select sum(length) as t_length, sum(preTranscode_size) as t_size, count(*) as t_count, count(distinct uploaded_by) as t_users FROM video_service.videos where name like ? and private = 0 order by processing desc, uploaded_at desc LIMIT ?, ?", keywords, skip, limit)
+
 		} else {
 			rows, err = db.Query("SELECT * FROM videos where private = 0 order by processing desc, uploaded_at desc LIMIT ?, ?", skip, limit)
+			statRows, err = db.Query("select sum(length) as t_length, sum(preTranscode_size) as t_size, count(*) as t_count, count(distinct uploaded_by) as t_users FROM video_service.videos where private = 0 order by processing desc, uploaded_at desc")
 		}
 
 		if err != nil {
 			l.Println(err.Error())
 		}
-		var Rows []DbRow
+		var Rows []interface{}
 		for rows.Next() {
 			var d_key string
 			var name string
@@ -107,6 +119,15 @@ func main() {
 			err = rows.Scan(&d_key, &name, &uploaded_at, &uploaded_by, &length, &thumb_count, &processing, &size, &timestamp, &notes, &private)
 
 			Rows = append(Rows, DbRow{d_key, name, uploaded_at, length, thumb_count, processing, size, timestamp, notes})
+		}
+
+		for statRows.Next() {
+			var t_length int64
+			var t_size int64
+			var t_count int
+			var t_users int
+			err = statRows.Scan(&t_length, &t_size, &t_count, &t_users)
+			Rows = append(Rows, StatRow{t_length, t_size, t_count, t_users})
 		}
 
 		return Rows, nil

@@ -132,6 +132,7 @@ $(document).ready(function () {
             videoQueue: [],
             inSearch: false,
             loading: false,
+            stats: {},
             pagination: {
                 'skip': 0,
                 'limit': 200
@@ -141,6 +142,7 @@ $(document).ready(function () {
             lastAddedVideoQueue: null,
             thumbnailSize: localStorage.getItem('thumbnailSize') ? localStorage.getItem('thumbnailSize') : 200
         },
+        computed: {'T_size': function() { return formatBytes(this.stats.T_size)}},
         watch: {
             'videoQueue': function () {
                 plyr.setup(".r" + this.lastAddedVideoQueue);
@@ -197,6 +199,8 @@ $(document).ready(function () {
                     success: function (data) {
                         vue.$set('loading', false);
                         if (data) {
+                            vue.$set('stats', data[data.length-1]);
+                            data.splice(-1,1);
                             vue.$set('videos', data);
                             vue.$set('pagination.skip', vue.$get('pagination.limit'));
                             vue.$set('pagination.limit', vue.$get('pagination.limit') + 200);
@@ -244,6 +248,9 @@ $(document).ready(function () {
                                 $('.popup .' + obj.DisplayKey + ' .uploadBar .uploadProgress').html("Done!").addClass('fileDone').removeClass('fileTranscoding');
                             }
                         });
+
+                        vue.$set('stats', data[data.length-1]);
+                        data.splice(-1,1);
                         if (!vue.$get('inSearch') && localStorage.getItem('autoRefresh') == "true") {
                             vue.$set('videos', data);
                         } else if (vue.videos.length == 0) {

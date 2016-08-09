@@ -1,5 +1,8 @@
 package main
 
+// This function is invoked by an SNS event upon the completion of a
+// transcoding job
+
 import (
 	"encoding/json"
 	"github.com/inturn/go-helpers"

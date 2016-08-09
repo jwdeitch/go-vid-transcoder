@@ -115,7 +115,8 @@ func main() {
 				true, // in processing?
 				s3record.S3.Object.Size, // size of uploaded file
 				currentTimeAsString, // processing_timestamp
-				nil) //notes
+				nil, //notes
+				0) // private
 			if err != nil {
 				l.Println(err);
 			}

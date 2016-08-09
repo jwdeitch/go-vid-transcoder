@@ -110,12 +110,14 @@ https://s3.amazonaws.com/idrsainput/output/{{video.Stamp}}%23{{video.DisplayKey}
             </div>
             <div v-else>
                 <div class="ui message welcome">
-                    <div class="header">
-                        Welcome
-                    </div>
+                    <h4>Currently hosting <span class="stat">{{stats.T_count}}</span> videos,
+                        totalling <span class="stat">{{secondsToString(stats.T_length)}}</span>
+                         ( <span class="stat">{{T_size}}</span> ) from
+                        <span class="stat">{{stats.T_users}}</span> user(s)</h4>
                     <hr>
-                    <h4>This is an example of using Apex and AWS Lambda to produce scalable
-                        upload, transcode, and distribution of video.</h4>
+                    <a href="https://github.com/jwdeitch/go-vid-transcoder"><i class="github large icon"></i></a>
+                    <a href="http://spacemacs.org/" class="right"><img src="https://cdn.rawgit.com/syl20bnr/spacemacs/442d025779da2f62fc86c2082703697714db6514/assets/spacemacs-badge.svg" /></a>
+
                 </div>
             </div>
         </div>

@@ -4,7 +4,11 @@
 
 <p align="center">
 <img src="http://s.rsa.pub/uitmg9ds1pryawa.jpg">
+<img src="http://s.rsa.pub/o1ef6dltuq0awit.png">
+<img src="http://s.rsa.pub/yxs7ywbda9tzj3e.png">
+<img src="http://s.rsa.pub/3o2htlqqmerxiqt.png">
 </p>
+
 
 ### Features
 
@@ -12,10 +16,9 @@
 - [X] Uploading directly to S3
 - [X] Real-time upload and transcode progress
 - [X] Thumbnail size slider
+- [X] Video click behavior (stack, queue, overwrite)
 - [ ] Dark theme
-- [ ] Video click behavior (stack, queue, overwrite)
 - [ ] Favorites
-- [ ] Statistics
 
 ---
 ### Built with
