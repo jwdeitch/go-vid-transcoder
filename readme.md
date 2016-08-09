@@ -1,6 +1,6 @@
-## AWS Video Transcoder
+## AWS Video Transcoder | [demo](http://tv.rsa.pub)
 
-<h4 align="center">Video uploading and transcoding in AWS Lambda, with Golang and [Apex](http://github.com/apex/apex) [demo](http://tv.rsa.pub)</h1>
+<h4 align="center">Video uploading and transcoding in AWS Lambda, with Golang and [Apex](http://github.com/apex/apex)</h1>
 
 <p align="center">
 <img src="http://s.rsa.pub/uitmg9ds1pryawa.jpg">
