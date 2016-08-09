@@ -369,24 +369,27 @@ $(document).ready(function () {
         }
     }).dropdown('set selected', vue.clickBehavior);
 
-    var isWorking = 0;
+
+    // Pagination:
+
+    // var isWorking = 0;
     // Thanks! http://stackoverflow.com/a/9613694/4603498
-    $('#videoGrid').scroll(function (a, b) {
-        if (isWorking == 1) {
-            return
-        }
-        isWorking = 1;
-        lastDisplayKey = vue.videos[vue.videos.length - 1].DisplayKey;
-        if (isScrolledIntoView($('[data-d_key="' + lastDisplayKey + '"]'))) {
-            if (vue.inSearch) {
-                vue.getSearchResults()
-            } else {
-                vue.getData()
-            }
-        }
-        setTimeout(function () {
-            isWorking = 0
-        }, 700);
-    });
+    // $('#videoGrid').scroll(function (a, b) {
+    //     if (isWorking == 1) {
+    //         return
+    //     }
+    //     isWorking = 1;
+    //     lastDisplayKey = vue.videos[vue.videos.length - 1].DisplayKey;
+    //     if (isScrolledIntoView($('[data-d_key="' + lastDisplayKey + '"]'))) {
+    //         if (vue.inSearch) {
+    //             vue.getSearchResults()
+    //         } else {
+    //             vue.getData()
+    //         }
+    //     }
+    //     setTimeout(function () {
+    //         isWorking = 0
+    //     }, 700);
+    // });
 
 });
