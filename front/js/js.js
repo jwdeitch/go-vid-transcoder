@@ -237,8 +237,6 @@ $(document).ready(function () {
                 }).done(function (data) {
                     vue.$set('loading', false);
                     if (data) {
-                        vue.$set('pagination.skip', vue.$get('pagination.limit'));
-                        vue.$set('pagination.limit', vue.$get('pagination.limit') + 200);
                         data.map(function (obj) {
                             if (obj.Processing === false) {
                                 $('.popup .' + obj.DisplayKey + ' .uploadBar .uploadProgress').html("Done!").addClass('fileDone').removeClass('fileTranscoding');
