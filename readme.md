@@ -15,12 +15,14 @@
 <img src="http://s.rsa.pub/yxs7ywbda9tzj3e.png">
 
 <hr>
+</p>
+<h3>Settings persist to local storage</h3>
 
 <img src="http://s.rsa.pub/ufbnkjezhr5ssi8.png">
 
-<img src="http://s.rsa.pub/3o2htlqqmerxiqt.png" width="300">
-</p>
+<h3>(near) real-time transcoding progress</h3>
 
+<img src="http://s.rsa.pub/3o2htlqqmerxiqt.png" width="300">
 
 
 ### Features
