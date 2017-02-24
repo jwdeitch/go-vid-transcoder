@@ -8,12 +8,12 @@ import (
 	"github.com/aws/aws-sdk-go/service/elastictranscoder"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/aws/credentials"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/apex/go-apex"
 	"log"
 	"os"
 	"io/ioutil"
 	"database/sql"
+	_ "github.com/lib/pq"
 	"time"
 	"strconv"
 	"strings"
@@ -26,6 +26,7 @@ type Env struct {
 	SQLPASS            string `json:"SQL_PASS"`
 	SQLHOST            string `json:"SQL_HOST"`
 	SQLDB              string `json:"SQL_DB"`
+	SQLPORT            string `json:"SQL_PORT"`
 	WORKINGBUCKET      string `json:"WORKING_BUCKET"`
 }
 
@@ -57,16 +58,22 @@ func main() {
 
 		/* env var loading */
 		envFile, err := ioutil.ReadFile(".env")
-		helpers.Check(err);
+		helpers.ErrorCheckAndPrint(err);
 		var env Env
 		json.Unmarshal(envFile, &env)
 		os.Setenv("AWS_ACCESS_KEY_ID", env.AWSACCESSKEYID)
 		os.Setenv("AWS_SECRET_ACCESS_KEY", env.AWSSECRETACCESSKEY)
 
 		/* sql setup */
-		db, err := sql.Open("mysql", env.SQLUSR + ":" + env.SQLPASS + "@tcp(" + env.SQLHOST + ":3306)/" + env.SQLDB)
+		db, err := sql.Open("postgres",
+			"user=" + env.SQLUSR +
+				" dbname=" + env.SQLDB +
+				" dbhost=" + env.SQLHOST +
+				" dbpass=" + env.SQLPASS +
+				" dbport=" + env.SQLPORT +
+				" sslmode=enable")
 		if err != nil {
-			l.Println("ERROR 0")
+			l.Println("SQL ERROR 0", err.Error())
 		}
 		defer db.Close()
 
@@ -96,10 +103,11 @@ func main() {
 			if helpers.LastNCharacters(s3record.S3.Object.Key, 1) == "/" {
 				return event, nil
 			}
-			if s3record.S3.Object.Size > 5368709120 { // if the file is over 5gb
+			if s3record.S3.Object.Size > 5368709120 {
+				// if the file is over 5gb
 				return event, nil
 			}
-			display_key := strings.Split(strings.Split(strings.Split(s3record.S3.Object.Key, "/")[1], "%23%25%23")[1],".")[0]
+			display_key := strings.Split(strings.Split(strings.Split(s3record.S3.Object.Key, "/")[1], "%23%25%23")[1], ".")[0]
 
 			videoName := strings.Split(strings.Split(s3record.S3.Object.Key, "/")[1], "%23%25%23")[0]
 
@@ -114,7 +122,8 @@ func main() {
 				0, // number of thumbnails generated
 				true, // in processing?
 				s3record.S3.Object.Size, // size of uploaded file
-				currentTimeAsString, // processing_timestamp
+				nil, // size of transcoded file
+				nil, // view count
 				nil, //notes
 				0) // private
 			if err != nil {

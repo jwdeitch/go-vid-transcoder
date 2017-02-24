@@ -3,14 +3,14 @@ package main
 import (
 	"encoding/json"
 	"github.com/inturn/go-helpers"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/apex/go-apex"
-	"log"
 	"os"
 	"io/ioutil"
-	"database/sql"
 	"regexp"
 	"strconv"
+	"database/sql"
+	_ "github.com/lib/pq"
+	"log"
 )
 
 type Env struct {
@@ -20,6 +20,7 @@ type Env struct {
 	SQLPASS            string `json:"SQL_PASS"`
 	SQLHOST            string `json:"SQL_HOST"`
 	SQLDB              string `json:"SQL_DB"`
+	SQLPORT            string `json:"SQL_PORT"`
 	WORKINGBUCKET      string `json:"WORKING_BUCKET"`
 }
 
@@ -61,14 +62,25 @@ func main() {
 
 		/* env var loading */
 		envFile, err := ioutil.ReadFile(".env")
-		helpers.Check(err);
+		helpers.ErrorCheckAndPrint(err);
 		var env Env
 		json.Unmarshal(envFile, &env)
-
+l.Println("user=" + env.SQLUSR +
+	" dbname=" + env.SQLDB +
+	" dbhost=" + env.SQLHOST +
+	" dbpass=" + env.SQLPASS +
+	" dbport=" + env.SQLPORT +
+	" sslmode=enable");
 		/* sql setup */
-		db, err := sql.Open("mysql", env.SQLUSR + ":" + env.SQLPASS + "@tcp(" + env.SQLHOST + ":3306)/" + env.SQLDB)
+		db, err := sql.Open("postgres",
+			"user=" + env.SQLUSR +
+				" dbname=" + env.SQLDB +
+				" dbhost=" + env.SQLHOST +
+				" dbpass=" + env.SQLPASS +
+				" dbport=" + env.SQLPORT +
+				" sslmode=enable")
 		if err != nil {
-			l.Println("ERROR 0")
+			l.Println("SQL ERROR 0", err.Error())
 		}
 		defer db.Close()
 
@@ -88,16 +100,14 @@ func main() {
 
 		if (searchQuery.Params.Querystring.Q != nil) {
 			keywords := "%" + reg.ReplaceAllString(*searchQuery.Params.Querystring.Q, "_") + "%"
-			rows, err = db.Query("SELECT * FROM videos where name like ? and private = 0 order by processing desc, uploaded_at desc LIMIT ?, ?", keywords, skip, limit)
-			l.Println(keywords)
-			l.Println(skip)
-			l.Println(limit)
+			rows, err = db.Query("SELECT * FROM videos where video_title ilike ? and is_private = false order by is_processing desc, uploaded_at desc LIMIT ?, ?", keywords, skip, limit)
 
-			statRows, err = db.Query("select sum(length) as t_length, sum(preTranscode_size) as t_size, count(*) as t_count, count(distinct uploaded_by) as t_users FROM video_service.videos where name like ? and private = 0 order by processing desc, uploaded_at desc LIMIT ?, ?", keywords, skip, limit)
+			statRows, err = db.Query("select sum(video_length_seconds) as t_length, sum(pre_transcode_size_bytes) as t_size, count(*) as t_count, count(distinct uploaded_by) as t_users FROM videos where video_title ilike ? and is_private = false", keywords, skip, limit)
 
 		} else {
-			rows, err = db.Query("SELECT * FROM videos where private = 0 order by processing desc, uploaded_at desc LIMIT ?, ?", skip, limit)
-			statRows, err = db.Query("select sum(length) as t_length, sum(preTranscode_size) as t_size, count(*) as t_count, count(distinct uploaded_by) as t_users FROM video_service.videos where private = 0 order by processing desc, uploaded_at desc")
+			rows, err = db.Query("SELECT * FROM videos where is_private = false order by processing desc, uploaded_at desc LIMIT ?, ?", skip, limit)
+
+			statRows, err = db.Query("select sum(video_length_seconds) as t_length, sum(pre_transcode_size_bytes) as t_size, count(*) as t_count, count(distinct uploaded_by) as t_users FROM videos where is_private = false")
 		}
 
 		if err != nil {

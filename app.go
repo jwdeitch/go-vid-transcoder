@@ -50,7 +50,7 @@ func main() {
 	http.HandleFunc("/video/upload", uploadVideo) // POST upload video
 
 	err := http.ListenAndServe(":9090", nil)
-	helpers.Check(err)
+	helpers.ErrorCheckAndPrint(err)
 
 }
 
@@ -77,7 +77,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 		Prefix: aws.String("videos/output")}
 
 	objects, err := svc.ListObjects(&lsObjs)
-	helpers.Check(err)
+	helpers.ErrorCheckAndPrint(err)
 
 	var S3Objlist objectListItem
 

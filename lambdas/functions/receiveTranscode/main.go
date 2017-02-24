@@ -57,7 +57,7 @@ func main() {
 
 		/* env var loading */
 		envFile, err := ioutil.ReadFile(".env")
-		helpers.Check(err);
+		helpers.ErrorCheckAndPrint(err);
 		var env Env
 		json.Unmarshal(envFile, &env)
 
@@ -85,7 +85,7 @@ func main() {
 			return event, nil
 		}
 
-		uptStmt, err := db.Prepare("UPDATE videos SET processing = false, length = ?, thumb_count = ? WHERE display_key = ?")
+		uptStmt, err := db.Prepare("UPDATE videos SET is_processing = false, video_length_seconds = ?, thumb_count = ? WHERE id = ?")
 		if err != nil {
 			l.Println(err.Error())
 		}
