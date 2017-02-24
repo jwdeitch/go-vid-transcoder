@@ -12,3 +12,5 @@ CREATE TABLE videos (
   notes                     TEXT,
   is_private                BOOL
 );
+
+select * from videos;

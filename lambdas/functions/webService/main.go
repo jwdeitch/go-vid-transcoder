@@ -65,19 +65,14 @@ func main() {
 		helpers.ErrorCheckAndPrint(err);
 		var env Env
 		json.Unmarshal(envFile, &env)
-l.Println("user=" + env.SQLUSR +
-	" dbname=" + env.SQLDB +
-	" dbhost=" + env.SQLHOST +
-	" dbpass=" + env.SQLPASS +
-	" dbport=" + env.SQLPORT +
-	" sslmode=enable");
+
 		/* sql setup */
 		db, err := sql.Open("postgres",
-			"user=" + env.SQLUSR +
-				" dbname=" + env.SQLDB +
-				" dbhost=" + env.SQLHOST +
-				" dbpass=" + env.SQLPASS +
-				" dbport=" + env.SQLPORT +
+			"user=" + os.Getenv("SQL_USR") +
+				" dbname=" + os.Getenv("SQL_DB") +
+				" dbhost=" + os.Getenv("SQL_HOST") +
+				" dbpass=" + os.Getenv("SQL_PASS") +
+				" dbport=" + os.Getenv("SQL_PORT") +
 				" sslmode=enable")
 		if err != nil {
 			l.Println("SQL ERROR 0", err.Error())

@@ -2,3 +2,4 @@
 lambdas/project.json
 .env*
 node_modules
+function.json

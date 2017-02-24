@@ -33,12 +33,11 @@ exports.handle = function (e, ctx, cb) {
     }
 
     var s3 = require("policyWriter");
-    var env = require(".env.json");
 
     var s3Config = {
-        accessKey: env.AWS_ACCESS_KEY_ID,
-        secretKey: env.AWS_SECRET_ACCESS_KEY,
-        bucket: env.WORKING_BUCKET,
+        accessKey: process.env.SAWS_ACCESS_KEY_ID,
+        secretKey: process.env.SAWS_SECRET_ACCESS_KEY,
+        bucket: process.env.WORKING_BUCKET,
         region: "us-east-1",
         type: e.type
     };

@@ -61,17 +61,17 @@ func main() {
 		helpers.ErrorCheckAndPrint(err);
 		var env Env
 		json.Unmarshal(envFile, &env)
-		os.Setenv("AWS_ACCESS_KEY_ID", env.AWSACCESSKEYID)
-		os.Setenv("AWS_SECRET_ACCESS_KEY", env.AWSSECRETACCESSKEY)
+		os.Setenv("AWS_ACCESS_KEY_ID", os.Getenv("SAWS_ACCESS_KEY_ID"))
+		os.Setenv("AWS_SECRET_ACCESS_KEY", os.Getenv("SAWS_SECRET_ACCESS_KEY"))
 
 		/* sql setup */
 		db, err := sql.Open("postgres",
-			"user=" + env.SQLUSR +
-				" dbname=" + env.SQLDB +
-				" dbhost=" + env.SQLHOST +
-				" dbpass=" + env.SQLPASS +
-				" dbport=" + env.SQLPORT +
-				" sslmode=enable")
+			"user=" + os.Getenv("SQL_USR") +
+				" dbname=" + os.Getenv("SQL_DB") +
+				" host=" + os.Getenv("SQL_HOST") +
+				" password=" + os.Getenv("SQL_PASS") +
+				" port=" + os.Getenv("SQL_PORT") +
+				" sslmode=disable")
 		if err != nil {
 			l.Println("SQL ERROR 0", err.Error())
 		}
